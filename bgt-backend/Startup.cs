@@ -1,21 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
-namespace bgt_backend
+namespace BGTBackend
 {
     public class Startup
     {
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            this.Configuration = configuration;
         }
 
         public IConfiguration Configuration { get; }
@@ -24,6 +18,10 @@ namespace bgt_backend
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+            services.AddCors(o => o.AddPolicy("DefaultPolicy", builder =>
+            {
+                builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().AllowCredentials();
+            }));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -34,7 +32,9 @@ namespace bgt_backend
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseCors("DefaultPolicy");
             app.UseMvc();
+            app.UseFileServer();
         }
     }
 }
