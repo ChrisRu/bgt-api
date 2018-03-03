@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BGTBackend.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/test")]
     public class ValuesController : Controller
     {
         // GET api/values
