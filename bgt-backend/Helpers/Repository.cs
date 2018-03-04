@@ -8,89 +8,54 @@ using Dapper;
 
 namespace BGTBackend.Helpers
 {
-    public class Repository
+    public abstract class Repository
     {
-        protected Task<T> QueryFirstOrDefault<T>(string sql, Dictionary<string, string> match)
+        protected static Task<T> QueryFirstOrDefault<T>(string sql, Dictionary<string, string> match)
         {
-            using (var connection = this.CreateConnection())
+            using (var connection = CreateConnection())
             {
-                try
-                {
-                    connection.Open();
-                    return this.QueryFirstOrDefault<T>(sql + DictToSQL(match), match.Values);
-                }
-                finally
-                {
-                    connection.Close();
-                }
+                connection.Open();
+                return QueryFirstOrDefault<T>(sql + DictToSQL(match), match.Values);
             }
         }
         
-        protected Task<T> QueryFirstOrDefault<T>(string sql, object parameters = null)
+        protected static Task<T> QueryFirstOrDefault<T>(string sql, object parameters = null)
         {
-            using (var connection = this.CreateConnection())
+            using (var connection = CreateConnection())
             {
-                try
-                {
-                    connection.Open();
-                    return connection.QueryFirstOrDefaultAsync<T>(sql, parameters);
-                }
-                finally
-                {
-                    connection.Close();
-                }
+                connection.Open();
+                return connection.QueryFirstOrDefaultAsync<T>(sql, parameters);
             }
         }
         
-        protected Task<IEnumerable<T>> Query<T>(string sql, Dictionary<string, string> match)
+        protected static Task<IEnumerable<T>> Query<T>(string sql, Dictionary<string, string> match)
         {
-            using (var connection = this.CreateConnection())
+            using (var connection = CreateConnection())
             {
-                try
-                {
-                    connection.Open();
-                    return this.Query<T>(sql + DictToSQL(match), match.Values);
-                }
-                finally
-                {
-                    connection.Close();
-                }
+                connection.Open();
+                return Query<T>(sql + DictToSQL(match), match.Values);
             }
         }
 
-        protected Task<IEnumerable<T>> Query<T>(string sql, object parameters = null)
+        protected static Task<IEnumerable<T>> Query<T>(string sql, object parameters = null)
         {
-            using (var connection = this.CreateConnection())
+            using (var connection = CreateConnection())
             {
-                try
-                {
-                    connection.Open();
-                    return connection.QueryAsync<T>(sql, parameters);
-                }
-                finally
-                {
-                    connection.Close();
-                }
+                connection.Open();
+                return connection.QueryAsync<T>(sql, parameters);
             }
         }
 
         protected Task<int> Execute(string sql, object parameters = null)
         {
-            using (var connection = this.CreateConnection())
+            using (var connection = CreateConnection())
             {
-                try
-                {
-                    connection.Open();
-                    return connection.ExecuteAsync(sql, parameters);
-                }
-                finally
-                {
-                    connection.Close();
-                }
+                connection.Open();
+                return connection.ExecuteAsync(sql, parameters);
             }
         }
 
-        private IDbConnection CreateConnection()
+        private static IDbConnection CreateConnection()
         {
             var connection = new SqlConnection("server=tcp:localhost, 3306");
             return connection;

@@ -9,7 +9,7 @@ namespace BGTBackend.Controllers
     [Route("api/projects")]
     public class ProjectController : Controller
     {
-        private ProjectRepository Repository { get; }
+        private readonly ProjectRepository Repository;
 
         public ProjectController()
         {

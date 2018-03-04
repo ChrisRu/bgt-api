@@ -1,6 +1,6 @@
 ﻿namespace BGTBackend.Models
 {
-    public class Measurement
+    internal class Measurement
     {
         public int Hours { get; set; }
         

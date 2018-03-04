@@ -5,16 +5,16 @@ using BGTBackend.Models;
 
 namespace BGTBackend.Clients
 {
-    public class ProjectRepository : Repository
+    internal class ProjectRepository : Repository, IRepository<Project>
     {
         public Task<IEnumerable<Project>> GetAll()
         {
-            return this.Query<Project>("SELECT * FROM project");
+            return Query<Project>("SELECT * FROM project");
         }
 
         public Task<Project> Get(Dictionary<string, string> match)
         {
-            return this.QueryFirstOrDefault<Project>("SELECT * FROM project", match);
+            return QueryFirstOrDefault<Project>("SELECT * FROM project", match);
         }
     }
 }
