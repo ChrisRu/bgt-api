@@ -72,6 +72,7 @@ namespace BGTBackend
                 app.UseDeveloperExceptionPage();
             }
             
+            app.UseAuthentication();
             app.UseMvc();
             app.UseMiddleware<TokenProviderMiddleware>(Options.Create(jwtOptions));
             app.UseCors("DefaultPolicy");

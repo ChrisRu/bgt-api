@@ -36,19 +36,17 @@ namespace BGTBackend.Middleware
 
             if (context.Request.Method != "POST")
             {
-                context.Response.StatusCode = 405;
-                return context.Response.WriteAsync("Use a post request to supply your login data");
+                return Error(context, 405, "Gebruik een POST request om log in data mee te sturen");
             }
 
             if (!context.Request.HasFormContentType)
             {
-                context.Response.StatusCode = 400;
-                return context.Response.WriteAsync("Add your login data to the post request");
+                return Error(context, 400, "Vergeten gebruikersinformatie mee te sturen");
             }
 
             return this.GenerateToken(context);
         }
-        
+
         [ValidateAntiForgeryToken]
         private async Task GenerateToken(HttpContext context)
         {
@@ -57,19 +55,20 @@ namespace BGTBackend.Middleware
 
             var user = await this._repository.Get(new Dictionary<string, string>
             {
-                {"username", username},
-                {"password", password}
+                {"username", username}
             });
 
-            // TODO: OH BOY NICE COMPARISON BRO WHO NEEDS HASHING ANYWAYS AMIRITE
-            bool result = password == user.Password;
-            
-            Console.WriteLine(password + " " + user.Password);
-
-            if (!result)
+            if (user == null)
             {
-                context.Response.StatusCode = 401;
-                await context.Response.WriteAsync("Invalid username or password");
+                await Error(context, 401, "Gebruiker bestaat niet");
+                return;
+            }
+
+            // TODO: Compare passwords here
+            if (password != user.Password)
+            {
+                await Error(context, 401, "Gebruikersnaam of wachtwoord is incorrect");
+
                 return;
             }
 
@@ -80,7 +79,7 @@ namespace BGTBackend.Middleware
                 new Claim(JwtRegisteredClaimNames.Sub, username),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(),
-                    ClaimValueTypes.Integer64),
+                    ClaimValueTypes.Integer64)
             };
 
             var jwt = new JwtSecurityToken(
@@ -94,14 +93,23 @@ namespace BGTBackend.Middleware
 
             string encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
 
-            var response = new
+            await Send(context, new
             {
                 token = encodedJwt,
                 expires = (int) this._options.Expiration.TotalSeconds
-            };
+            });
+        }
 
+        private static Task Send(HttpContext context, object message)
+        {
             context.Response.ContentType = "application/json";
-            await context.Response.WriteAsync(JsonConvert.SerializeObject(response));
+            return context.Response.WriteAsync(JsonConvert.SerializeObject(message));
+        }
+
+        private static Task Error(HttpContext context, int code, string message)
+        {
+            context.Response.StatusCode = code;
+            return Send(context, new {error = message});
         }
     }
 }

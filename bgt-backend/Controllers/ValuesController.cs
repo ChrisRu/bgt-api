@@ -9,15 +9,19 @@ namespace BGTBackend.Controllers
     {
         // GET api/values
         [HttpGet]
+        [Authorize]
         public IEnumerable<string> Get()
         {
-            return new string[] { "value1", "value2" };
+            return new [] { "value1", "value2" };
         }
 
         [HttpGet("/test")]
-        public string Test()
+        [Authorize]
+        public object Test()
         {
-            return "oh boy";
+            return new {
+                message = "oh boy"
+            };
         }
 
         // GET api/values/5
@@ -25,7 +29,7 @@ namespace BGTBackend.Controllers
         [Authorize]
         public string Get(int id)
         {
-            return "value";
+            return "value: " + id;
         }
     }
 }

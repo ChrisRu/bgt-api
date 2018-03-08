@@ -14,6 +14,7 @@ namespace BGTBackend.Clients
 
         public async Task<User> Get(Dictionary<string, string> match)
         {
+            // TODO: FIX THIS
             return new User{ Password = "123", Username = "test" };
             // return QueryFirstOrDefault<User>("SELECT * FROM user", match);
         }
