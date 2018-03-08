@@ -1,35 +1,40 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using BGTBackend.Clients;
+using BGTBackend.Repositories;
 using BGTBackend.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 
 namespace BGTBackend.Controllers
 {
     [Route("api/projects")]
     public class ProjectController : Controller
     {
-        private readonly ProjectRepository Repository;
+        private readonly ProjectRepository _repo = new ProjectRepository();
 
-        public ProjectController()
-        {
-            this.Repository = new ProjectRepository();
-        }
-        
-        // GET api/projects
         [HttpGet]
-        public Task<IEnumerable<Project>> GetAll()
+        public async Task<IEnumerable<Project>> GetAll()
         {
-            return this.Repository.GetAll();
+            IEnumerable<Project> results = await this._repo.GetAll();
+            return results.Select(Filter);
         }
 
         [HttpGet("{id}")]
-        public Task<Project> Get(int id)
+        public async Task<Project> Get(int id)
         {
-            return this.Repository.Get(new Dictionary<string, string>
+            var result = await this._repo.Get(new Dictionary<string, string>
             {
                 {"id", id.ToString()}
             });
+
+            return Filter(result);
+        }
+
+        private static Project Filter(Project project)
+        {
+            project.Id = null;
+            
+            return project;
         }
     }
 }

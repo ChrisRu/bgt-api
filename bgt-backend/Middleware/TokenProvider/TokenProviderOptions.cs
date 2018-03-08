@@ -5,13 +5,13 @@ namespace BGTBackend.Middleware
 {
     internal class TokenProviderOptions
     {
-        public string Path { get; set; } = "/api/authentication";
+        public string Path { get; } = "/api/authentication";
         
         public string Issuer { get; set; }
         
         public string Audience { get; set; }
 
-        public TimeSpan Expiration { get; set; } = TimeSpan.FromMinutes(5);
+        public TimeSpan Expiration { get; } = TimeSpan.FromMinutes(5);
         
         public SigningCredentials SigningCredentials { get; set; }
     }

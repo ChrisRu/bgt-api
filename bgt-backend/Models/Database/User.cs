@@ -1,6 +1,6 @@
 ﻿namespace BGTBackend.Models
 {
-    internal class User
+    public class User
     {
         public string Username { get; set; }
         

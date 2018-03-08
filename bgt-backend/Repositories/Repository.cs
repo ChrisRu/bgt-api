@@ -6,20 +6,20 @@ using System.Threading.Tasks;
 using BGTBackend.Models;
 using Dapper;
 
-namespace BGTBackend.Helpers
+namespace BGTBackend.Repositories
 {
-    public abstract class Repository
+    public abstract class Repository<T>
     {
-        protected static Task<T> QueryFirstOrDefault<T>(string sql, Dictionary<string, string> match)
+        protected static Task<T> QueryFirstOrDefault(string sql, Dictionary<string, string> match)
         {
             using (var connection = CreateConnection())
             {
                 connection.Open();
-                return QueryFirstOrDefault<T>(sql + DictToSQL(match), match.Values);
+                return QueryFirstOrDefault(sql + DictToSQL(match), match.Values);
             }
         }
         
-        protected static Task<T> QueryFirstOrDefault<T>(string sql, object parameters = null)
+        protected static Task<T> QueryFirstOrDefault(string sql, object parameters = null)
         {
             using (var connection = CreateConnection())
             {
@@ -28,16 +28,16 @@ namespace BGTBackend.Helpers
             }
         }
         
-        protected static Task<IEnumerable<T>> Query<T>(string sql, Dictionary<string, string> match)
+        protected static Task<IEnumerable<T>> Query(string sql, Dictionary<string, string> match)
         {
             using (var connection = CreateConnection())
             {
                 connection.Open();
-                return Query<T>(sql + DictToSQL(match), match.Values);
+                return Query(sql + DictToSQL(match), match.Values);
             }
         }
 
-        protected static Task<IEnumerable<T>> Query<T>(string sql, object parameters = null)
+        protected static Task<IEnumerable<T>> Query(string sql, object parameters = null)
         {
             using (var connection = CreateConnection())
             {

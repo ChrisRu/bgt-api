@@ -1,15 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using BGTBackend.Helpers;
 using BGTBackend.Models;
 
-namespace BGTBackend.Clients
+namespace BGTBackend.Repositories
 {
-    internal class UserRepository : Repository
+    internal class UserRepository : Repository<User>
     {
         public Task<IEnumerable<User>> GetAll()
         {
-            return Query<User>("SELECT * FROM user");
+            return Query("SELECT * FROM user");
         }
 
         public async Task<User> Get(Dictionary<string, string> match)
