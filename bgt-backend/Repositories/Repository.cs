@@ -46,7 +46,7 @@ namespace BGTBackend.Repositories
             }
         }
 
-        protected Task<int> Execute(string sql, object parameters = null)
+        protected static Task<int> Execute(string sql, object parameters = null)
         {
             using (var connection = CreateConnection())
             {

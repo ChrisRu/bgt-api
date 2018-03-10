@@ -11,25 +11,13 @@ namespace BGTBackend.Controllers
     public class UserController : Controller
     {
         private readonly UserRepository _repo = new UserRepository();
-        
-        [HttpGet]
-        public async Task<IEnumerable<User>> GetAll()
-        {
-            IEnumerable<User> results = await this._repo.GetAll();
-            return results.Select(Filter);
-        }
 
-        [HttpGet]
-        public async Task<User> Get(Dictionary<string, string> match)
+        [HttpPost]
+        public async Task<User> CreateUser()
         {
-            var result = await this._repo.Get(match);
-            return Filter(result);
-        }
-
-        private static User Filter(User user)
-        {
-            user.Password = null;
-            return user;
+            var newUser = new User();
+            await this._repo.Add(newUser);
+            return newUser;
         }
     }
 }
