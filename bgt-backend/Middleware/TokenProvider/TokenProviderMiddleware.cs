@@ -17,13 +17,12 @@ namespace BGTBackend.Middleware
 
         private readonly TokenProviderOptions _options;
 
-        private readonly UserRepository _repository;
+        private readonly UserRepository _repository = new UserRepository();
 
         public TokenProviderMiddleware(RequestDelegate next, IOptions<TokenProviderOptions> options)
         {
             this._next = next;
             this._options = options.Value;
-            this._repository = new UserRepository();
         }
 
         public Task Invoke(HttpContext context)

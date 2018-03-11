@@ -3,7 +3,6 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
-using BGTBackend.Models;
 using Dapper;
 
 namespace BGTBackend.Repositories

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BGTBackend.Controllers
 {
-    [Route("api/authentication")]
+    [Route("api/authenticated")]
     public class AuthenticationController : Controller
     {
         [HttpGet]

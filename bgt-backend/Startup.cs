@@ -14,7 +14,7 @@ namespace BGTBackend
     internal class Startup
     {
         // TODO: FIX THIS WITH ENV VARIABLES
-        private const string SecretKey = "temporary_super_secret_key_lol_hahahahahahahahahaha";
+        private const string SecretKey = "temporary_super_secret_key_extra_secure_secret_hidden_not_displayed";
         private const string Issuer = "TestUser";
         private const string Audience = "TestAudience";
         private SymmetricSecurityKey SigningKey { get; }
@@ -52,7 +52,7 @@ namespace BGTBackend
                     ClockSkew = TimeSpan.Zero
                 };
             });
-            
+
             services.AddCors(o => o.AddPolicy("DefaultPolicy",
                 builder => { builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().AllowCredentials(); }));
         }
@@ -71,12 +71,11 @@ namespace BGTBackend
             {
                 app.UseDeveloperExceptionPage();
             }
-            
+
             app.UseAuthentication();
             app.UseMvc();
             app.UseMiddleware<TokenProviderMiddleware>(Options.Create(jwtOptions));
             app.UseCors("DefaultPolicy");
-            // app.UseFileServer();
         }
     }
 }
