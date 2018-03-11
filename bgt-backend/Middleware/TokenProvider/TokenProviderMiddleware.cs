@@ -68,7 +68,6 @@ namespace BGTBackend.Middleware
             if (password != user.Password)
             {
                 await Error(context, 401, "Gebruikersnaam of wachtwoord is incorrect");
-
                 return;
             }
 

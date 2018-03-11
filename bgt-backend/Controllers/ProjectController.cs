@@ -33,7 +33,6 @@ namespace BGTBackend.Controllers
         private static Project Filter(Project project)
         {
             project.Id = null;
-            
             return project;
         }
     }

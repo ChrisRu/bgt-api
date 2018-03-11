@@ -18,7 +18,7 @@ namespace BGTBackend.Repositories
                 return QueryFirstOrDefault(sql + DictToSQL(match), match.Values);
             }
         }
-        
+
         protected static Task<T> QueryFirstOrDefault(string sql, object parameters = null)
         {
             using (var connection = CreateConnection())
@@ -27,7 +27,7 @@ namespace BGTBackend.Repositories
                 return connection.QueryFirstOrDefaultAsync<T>(sql, parameters);
             }
         }
-        
+
         protected static Task<IEnumerable<T>> Query(string sql, Dictionary<string, string> match)
         {
             using (var connection = CreateConnection())
