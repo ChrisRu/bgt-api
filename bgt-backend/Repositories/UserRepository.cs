@@ -11,14 +11,17 @@ namespace BGTBackend.Repositories
             return Query("SELECT * FROM user");
         }
 
-        public Task<User> Get(Dictionary<string, string> match)
+        public Task<User> Get(int userId)
         {
-            return QueryFirstOrDefault("SELECT * FROM user", match);
+            return QueryFirstOrDefault("SELECT * FROM user WHERE gebruikers_code = @userId", new { userId });
         }
 
         public Task<int> Add(User newUser)
         {
-            return Execute("INSERT INTO user(username, password) VALUES(@Username, @Password", newUser);
+            return Execute(@"
+                INSERT INTO user(username, password)
+                VALUES(@Username, @Password
+            ", newUser);
         }
     }
 }

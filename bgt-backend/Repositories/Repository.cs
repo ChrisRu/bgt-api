@@ -10,15 +10,6 @@ namespace BGTBackend.Repositories
 {
     public abstract class Repository<T>
     {
-        protected static Task<T> QueryFirstOrDefault(string sql, Dictionary<string, string> match)
-        {
-            using (var connection = CreateConnection())
-            {
-                connection.Open();
-                return QueryFirstOrDefault(sql + DictToSQL(match), match.Values);
-            }
-        }
-
         protected static Task<T> QueryFirstOrDefault(string sql, object parameters = null)
         {
             using (var connection = CreateConnection())
@@ -31,15 +22,6 @@ namespace BGTBackend.Repositories
                 Console.ResetColor();
 
                 return connection.QueryFirstOrDefaultAsync<T>(sql, parameters);
-            }
-        }
-
-        protected static Task<IEnumerable<T>> Query(string sql, Dictionary<string, string> match)
-        {
-            using (var connection = CreateConnection())
-            {
-                connection.Open();
-                return Query(sql + DictToSQL(match), match.Values);
             }
         }
 
@@ -90,12 +72,6 @@ namespace BGTBackend.Repositories
 
                 return CreateConnection();
             }
-        }
-
-        private static string DictToSQL(Dictionary<string, string> match)
-        {
-            string conditions = string.Join(" AND ", match.Select((kv, index) => kv.Key + "=$" + (index + 1)));
-            return " WHERE " + conditions;
         }
     }
 }

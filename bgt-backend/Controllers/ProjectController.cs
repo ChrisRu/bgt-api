@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using BGTBackend.Repositories;
 using BGTBackend.Models;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq;
 
 namespace BGTBackend.Controllers
 {
@@ -13,27 +12,23 @@ namespace BGTBackend.Controllers
         private readonly ProjectRepository _repo = new ProjectRepository();
 
         [HttpGet]
-        public async Task<IEnumerable<Project>> GetAll()
+        public Task<IEnumerable<Project>> GetAll()
         {
-            IEnumerable<Project> results = await this._repo.GetAll();
-            return results.Select(Filter);
+            return this._repo.GetAll();
         }
 
         [HttpGet("{id}")]
-        public async Task<Project> Get(int id)
+        public Task<Project> Get(int id)
         {
-            var result = await this._repo.Get(new Dictionary<string, string>
-            {
-                {"id", id.ToString()}
-            });
-
-            return Filter(result);
+            return this._repo.Get(id);
         }
 
-        private static Project Filter(Project project)
+        [HttpPost]
+        public async Task<Project> Create([FromBody] Project project)
         {
-            project.Id = null;
-            return project;
+            int result = await this._repo.Add(project);
+
+            return await this._repo.Get(result);
         }
     }
 }
