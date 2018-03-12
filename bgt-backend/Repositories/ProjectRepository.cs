@@ -13,7 +13,7 @@ namespace BGTBackend.Repositories
 
         public Task<Project> Get(int projectId)
         {
-            return QueryFirstOrDefault("SELECT * FROM project WHERE project = @projectId", new { projectId });
+            return QueryFirstOrDefault("SELECT * FROM project WHERE project_code = @projectId", new { projectId });
         }
 
         public Task<int> Add(Project project)
