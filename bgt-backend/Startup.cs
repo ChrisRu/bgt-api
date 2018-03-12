@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 using BGTBackend.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -13,18 +13,14 @@ namespace BGTBackend
 {
     internal class Startup
     {
-        // TODO: FIX THIS WITH ENV VARIABLES
-        private const string SecretKey = "temporary_super_secret_key_extra_secure_secret_hidden_not_displayed";
-        private const string Issuer = "TestUser";
-        private const string Audience = "TestAudience";
         private SymmetricSecurityKey SigningKey { get; }
 
         public Startup(IConfiguration configuration)
         {
             this.Configuration = configuration;
-            this.SigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(SecretKey));
+            this.SigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration.GetSection("Authentication")["Key"]));
 
-            Console.WriteLine("Started");
+            Console.WriteLine("Starting up the API");
         }
 
         private IConfiguration Configuration { get; }
@@ -34,6 +30,8 @@ namespace BGTBackend
         {
             services.AddMvc();
 
+            IConfigurationSection auth = this.Configuration.GetSection("Authentication");
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
             {
                 options.TokenValidationParameters = new TokenValidationParameters
@@ -42,10 +40,10 @@ namespace BGTBackend
                     IssuerSigningKey = this.SigningKey,
 
                     ValidateIssuer = true,
-                    ValidIssuer = Issuer,
+                    ValidIssuer = auth["Issuer"],
 
                     ValidateAudience = true,
-                    ValidAudience = Audience,
+                    ValidAudience = auth["Audience"],
 
                     ValidateLifetime = true,
 
@@ -55,15 +53,19 @@ namespace BGTBackend
 
             services.AddCors(o => o.AddPolicy("DefaultPolicy",
                 builder => { builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().AllowCredentials(); }));
+
+            Console.WriteLine("Set up all services");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            IConfigurationSection auth = this.Configuration.GetSection("Authentication");
+
             var jwtOptions = new TokenProviderOptions
             {
-                Audience = Audience,
-                Issuer = Issuer,
+                Audience = auth["Audience"],
+                Issuer = auth["Issuer"],
                 SigningCredentials = new SigningCredentials(this.SigningKey, SecurityAlgorithms.HmacSha256)
             };
 
@@ -76,6 +78,8 @@ namespace BGTBackend
             app.UseMvc();
             app.UseMiddleware<TokenProviderMiddleware>(Options.Create(jwtOptions));
             app.UseCors("DefaultPolicy");
+
+            Console.WriteLine("Set up all app features");
         }
     }
 }

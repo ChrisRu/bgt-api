@@ -1,4 +1,3 @@
-﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BGTBackend.Controllers
@@ -7,12 +6,11 @@ namespace BGTBackend.Controllers
     public class AuthenticationController : Controller
     {
         [HttpGet]
-        [Authorize]
         public object Get()
         {
             return new
             {
-                authorized = true
+                authorized = this.User.Identity.IsAuthenticated
             };
         }
     }

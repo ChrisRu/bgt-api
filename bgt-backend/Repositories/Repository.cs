@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
@@ -23,6 +24,12 @@ namespace BGTBackend.Repositories
             using (var connection = CreateConnection())
             {
                 connection.Open();
+
+                Console.WriteLine("Querying from database...");
+                Console.ForegroundColor = ConsoleColor.Gray;
+                Console.WriteLine("\t" + sql);
+                Console.ResetColor();
+
                 return connection.QueryFirstOrDefaultAsync<T>(sql, parameters);
             }
         }
@@ -41,6 +48,12 @@ namespace BGTBackend.Repositories
             using (var connection = CreateConnection())
             {
                 connection.Open();
+
+                Console.WriteLine("Querying from database...");
+                Console.ForegroundColor = ConsoleColor.Gray;
+                Console.WriteLine("\t" + sql);
+                Console.ResetColor();
+
                 return connection.QueryAsync<T>(sql, parameters);
             }
         }
@@ -50,14 +63,33 @@ namespace BGTBackend.Repositories
             using (var connection = CreateConnection())
             {
                 connection.Open();
+
+                Console.WriteLine("Executing on database...");
+                Console.ForegroundColor = ConsoleColor.Gray;
+                Console.WriteLine("\t" + sql);
+                Console.ResetColor();
+
                 return connection.ExecuteAsync(sql, parameters);
             }
         }
 
         private static IDbConnection CreateConnection()
         {
-            var connection = new SqlConnection("server=tcp:localhost, 3306");
-            return connection;
+            try
+            {
+                Console.WriteLine("Connecting to the database...");
+
+                var connection = new SqlConnection("server=tcp:localhost, 3306");
+                return connection;
+            }
+            catch (Exception error)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Failed to connect to the database: " + error.Message);
+                Console.ResetColor();
+
+                return CreateConnection();
+            }
         }
 
         private static string DictToSQL(Dictionary<string, string> match)
