@@ -1,9 +1,12 @@
 using System.Collections.Generic;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using BGTBackend.Repositories;
 using BGTBackend.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting.Internal;
 
 namespace BGTBackend.Controllers
 {

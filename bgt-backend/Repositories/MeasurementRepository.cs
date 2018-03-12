@@ -19,14 +19,17 @@ namespace BGTBackend.Repositories
         public Task<int> Add(Measurement measurement)
         {
             return Execute(@"
-                
+                INSERT INTO meting(project_code, bedrijf, oplevering, begindatum, einddatum_minicomp)
+                VALUES(@ProjectId, @Company, @DeliveryDate, @StartDate, @EndDate)
             ", measurement);
         }
 
         public Task<int> Edit(Measurement measurement)
         {
             return Execute(@"
-                
+                UPDATE meting
+                SET project_code = @ProjectId, bedrijf = @Company, oplevering = @DeliveryDate, begindatum = @StartDate, einddatum_minicomp = @EndDate
+                WHERE meting_code = @Id
             ", measurement);
         }
     }

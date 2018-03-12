@@ -52,10 +52,7 @@ namespace BGTBackend.Middleware
             var username = context.Request.Form["username"];
             var password = context.Request.Form["password"];
 
-            var user = await this._repository.Get(new Dictionary<string, string>
-            {
-                {"username", username}
-            });
+            var user = await this._repository.Get(username);
 
             if (user == null)
             {
