@@ -1,12 +1,10 @@
+using System;
 using System.Collections.Generic;
-using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using BGTBackend.Repositories;
 using BGTBackend.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting.Internal;
 
 namespace BGTBackend.Controllers
 {
@@ -17,25 +15,47 @@ namespace BGTBackend.Controllers
 
         [HttpGet]
         [Authorize]
-        public Task<IEnumerable<Project>> GetAll()
+        public async Task<IEnumerable<Project>> GetAll()
         {
-            return this._repo.GetAll();
+            try
+            {
+                return await this._repo.GetAll();
+            }
+            catch (Exception error)
+            {
+                await this.Error(Response.HttpContext, 404, error.Message, "Kan niet alle projecten ophalen");
+                return null;
+            }
         }
 
         [HttpGet("{id}")]
         [Authorize]
-        public Task<Project> Get(int id)
+        public async Task<Project> Get(int id)
         {
-            return this._repo.Get(id);
+            try
+            {
+                return await this._repo.Get(id);
+            }
+            catch (Exception error)
+            {
+                await this.Error(Response.HttpContext, 404, error.Message, "Project niet gevonden");
+                return null;
+            }
         }
 
         [HttpPost]
         [Authorize]
         public async Task<Project> Create([FromBody] Project project)
         {
-            int result = await this._repo.Add(project);
-
-            return await this._repo.Get(result);
+            try
+            {
+                return await this._repo.Add(project);
+            }
+            catch (Exception error)
+            {
+                await this.Error(Response.HttpContext, 405, error.Message, "Kan geen nieuw project aanmaken");
+                return null;
+            }
         }
     }
 }

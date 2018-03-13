@@ -16,7 +16,7 @@ namespace BGTBackend.Repositories
             return QueryFirstOrDefault("SELECT * FROM project WHERE project_code = @projectId", new { projectId });
         }
 
-        public Task<int> Add(Project project)
+        public Task<Project> Add(Project project)
         {
             return Execute(@"
                 INSERT INTO project(bgton_nummer, status, omschrijving, categorie, locatie_code)
@@ -24,7 +24,7 @@ namespace BGTBackend.Repositories
             ", project);
         }
 
-        public Task<int> Edit(Project project)
+        public Task<Project> Edit(Project project)
         {
             return Execute(@"
                 UPDATE project

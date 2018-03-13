@@ -16,7 +16,7 @@ namespace BGTBackend.Repositories
             return QueryFirstOrDefault("SELECT * FROM meting WHERE meting_code = @measurementId", new { measurementId });
         }
 
-        public Task<int> Add(Measurement measurement)
+        public Task<Measurement> Add(Measurement measurement)
         {
             return Execute(@"
                 INSERT INTO meting(project_code, bedrijf, oplevering, begindatum, einddatum_minicomp)
@@ -24,7 +24,7 @@ namespace BGTBackend.Repositories
             ", measurement);
         }
 
-        public Task<int> Edit(Measurement measurement)
+        public Task<Measurement> Edit(Measurement measurement)
         {
             return Execute(@"
                 UPDATE meting

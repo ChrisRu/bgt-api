@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using BGTBackend.Models;
 using BGTBackend.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -52,9 +53,15 @@ namespace BGTBackend.Middleware
             var username = context.Request.Form["username"];
             var password = context.Request.Form["password"];
 
-            var user = await this._repository.Get(username);
+            User user;
+            try
+            {
+                user = await this._repository.Get(username);
 
-            if (user == null)
+                if (user == null)
+                    throw new Exception("No user exists with username: " + username);
+            }
+            catch (Exception error)
             {
                 await Error(context, 401, "Gebruiker bestaat niet");
                 return;

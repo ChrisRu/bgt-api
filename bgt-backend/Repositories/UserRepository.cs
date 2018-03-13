@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using BGTBackend.Models;
@@ -21,7 +22,7 @@ namespace BGTBackend.Repositories
             return QueryFirstOrDefault("SELECT * FROM user WHERE gebruikersnaam = @username", new { username });
         }
 
-        public Task<int> Add(User newUser)
+        public Task<User> Add(User newUser)
         {
             return Execute(@"
                 INSERT INTO user(username, password)

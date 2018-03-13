@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using BGTBackend.Models;
 using BGTBackend.Repositories;
@@ -15,8 +16,15 @@ namespace BGTBackend.Controllers
         [Authorize]
         public async Task<User> CreateUser([FromBody] User user)
         {
-            await this._repo.Add(user);
-            return user;
+            try
+            {
+                return await this._repo.Add(user);
+            }
+            catch (Exception error)
+            {
+                await this.Error(Response.HttpContext, 405, error.Message, "Kan niet een nieuwe gebruiker aanmaken");
+                return null;
+            }
         }
     }
 }

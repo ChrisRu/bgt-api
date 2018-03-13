@@ -14,12 +14,14 @@ namespace BGTBackend.Repositories
         {
             using (var connection = CreateConnection())
             {
-                connection.Open();
+                bool connected = Connect(connection);
 
-                Console.WriteLine("Querying from database...");
-                Console.ForegroundColor = ConsoleColor.Gray;
-                Console.WriteLine("\t" + sql);
-                Console.ResetColor();
+                if (connected == false)
+                {
+                    throw new Exception("Can't connect to database");
+                }
+
+                LogQuery("Querying from database...", sql);
 
                 return connection.QueryFirstOrDefaultAsync<T>(sql, parameters);
             }
@@ -29,49 +31,64 @@ namespace BGTBackend.Repositories
         {
             using (var connection = CreateConnection())
             {
-                connection.Open();
+                bool connected = Connect(connection);
 
-                Console.WriteLine("Querying from database...");
-                Console.ForegroundColor = ConsoleColor.Gray;
-                Console.WriteLine("\t" + sql);
-                Console.ResetColor();
+                if (connected == false)
+                {
+                    throw new Exception("Can't connect to database");
+                }
+
+                LogQuery("Querying from database...", sql);
 
                 return connection.QueryAsync<T>(sql, parameters);
             }
         }
 
-        protected static Task<int> Execute(string sql, object parameters = null)
+        protected static Task<T> Execute(string sql, object parameters = null)
         {
             using (var connection = CreateConnection())
             {
-                connection.Open();
+                bool connected = Connect(connection);
 
-                Console.WriteLine("Executing on database...");
-                Console.ForegroundColor = ConsoleColor.Gray;
-                Console.WriteLine("\t" + sql);
-                Console.ResetColor();
+                if (connected == false)
+                {
+                    throw new Exception("Can't connect to database");
+                }
 
-                return connection.ExecuteAsync(sql, parameters);
+                LogQuery("Executing on database...", sql);
+
+                return connection.ExecuteScalarAsync<T>(sql, parameters);
             }
         }
 
-        private static IDbConnection CreateConnection()
+        private static void LogQuery(string message, string sql)
+        {
+            Console.WriteLine(message, sql);
+            Console.ForegroundColor = ConsoleColor.Gray;
+            Console.WriteLine("\t" + sql);
+            Console.ResetColor();
+        }
+
+        private static bool Connect(IDbConnection connection)
         {
             try
             {
-                Console.WriteLine("Connecting to the database...");
-
-                var connection = new SqlConnection("server=tcp:localhost, 3306");
-                return connection;
+                Console.WriteLine("Opening database connection...");
+                connection.Open();
+                return true;
             }
             catch (Exception error)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("Failed to connect to the database: " + error.Message);
                 Console.ResetColor();
-
-                return CreateConnection();
+                return false;
             }
+        }
+
+        private static IDbConnection CreateConnection()
+        {
+            return new SqlConnection("server=tcp:localhost, 3306");
         }
     }
 }
