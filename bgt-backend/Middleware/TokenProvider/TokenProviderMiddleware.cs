@@ -56,16 +56,19 @@ namespace BGTBackend.Middleware
             User user;
             try
             {
-                user = await this._repository.Get(username);
+                user = this._repository.Get(username);
 
                 if (user == null)
                     throw new Exception("No user exists with username: " + username);
             }
             catch (Exception error)
             {
-                await Error(context, 401, "Gebruiker bestaat niet");
+                await Error(context, 401, "Gebruiker bestaat niet: " + error.Message);
                 return;
             }
+
+            Console.WriteLine(user.Username + " : " + user.IsAdmin + " : " + user.Id);
+            Console.WriteLine(password + ":" + user.Password);
 
             // TODO: Compare passwords here
             if (password != user.Password)

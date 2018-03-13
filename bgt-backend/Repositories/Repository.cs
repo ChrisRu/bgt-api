@@ -3,14 +3,29 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Threading.Tasks;
 using Dapper;
 
 namespace BGTBackend.Repositories
 {
     public abstract class Repository<T>
     {
-        protected static Task<T> QueryFirstOrDefault(string sql, object parameters = null)
+        protected abstract Dictionary<string, string> DataMap { get; }
+
+        protected string GetSelects(string inner = " ") => string.Join(", ", this.DataMap.Select(kv => kv.Key + inner + kv.Value));
+
+        protected string GetUpdates() => this.GetSelects(" = @");
+
+        protected string GetInserts(string tableName)
+        {
+            string insertInto = string.Join(", ", this.DataMap.Select(kv => kv.Key));
+            string values = string.Join(", ", this.DataMap.Select(kv => "@" + kv.Value));
+            return $@"
+                INSERT INTO {tableName}({insertInto})
+                VALUES({values})
+            ";
+        }
+
+        protected static T QueryFirstOrDefault(string sql, object parameters = null)
         {
             using (var connection = CreateConnection())
             {
@@ -23,11 +38,11 @@ namespace BGTBackend.Repositories
 
                 LogQuery("Querying from database...", sql);
 
-                return connection.QueryFirstOrDefaultAsync<T>(sql, parameters);
+                return connection.QueryFirstOrDefault<T>(sql, parameters);
             }
         }
 
-        protected static Task<IEnumerable<T>> Query(string sql, object parameters = null)
+        protected static IEnumerable<T> Query(string sql, object parameters = null)
         {
             using (var connection = CreateConnection())
             {
@@ -40,11 +55,11 @@ namespace BGTBackend.Repositories
 
                 LogQuery("Querying from database...", sql);
 
-                return connection.QueryAsync<T>(sql, parameters);
+                return connection.Query<T>(sql, parameters);
             }
         }
 
-        protected static Task<T> Execute(string sql, object parameters = null)
+        protected static T Execute(string sql, object parameters = null)
         {
             using (var connection = CreateConnection())
             {
@@ -57,7 +72,7 @@ namespace BGTBackend.Repositories
 
                 LogQuery("Executing on database...", sql);
 
-                return connection.ExecuteScalarAsync<T>(sql, parameters);
+                return connection.ExecuteScalar<T>(sql, parameters);
             }
         }
 
@@ -88,7 +103,7 @@ namespace BGTBackend.Repositories
 
         private static IDbConnection CreateConnection()
         {
-            return new SqlConnection("server=tcp:localhost, 3306");
+            return new SqlConnection(Startup.ConnectionString);
         }
     }
 }

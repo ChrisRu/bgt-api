@@ -12,13 +12,33 @@ namespace BGTBackend.Controllers
     {
         private readonly UserRepository _repo = new UserRepository();
 
-        [HttpPost]
+        [HttpPut("{id}")]
         [Authorize]
-        public async Task<User> CreateUser([FromBody] User user)
+        public async Task<User> Edit(int id, [FromBody] User user)
         {
             try
             {
-                return await this._repo.Add(user);
+                if (id != user.Id)
+                {
+                    throw new Exception("Id does not match");
+                }
+
+                return this._repo.Edit(user);
+            }
+            catch (Exception error)
+            {
+                await this.Error(Response.HttpContext, 405, error.Message, "Kan gebruiker niet aanpassen");
+                return null;
+            }
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<User> Create([FromBody] User user)
+        {
+            try
+            {
+                return this._repo.Add(user);
             }
             catch (Exception error)
             {

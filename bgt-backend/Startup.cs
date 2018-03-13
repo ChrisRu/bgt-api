@@ -16,10 +16,13 @@ namespace BGTBackend
     {
         private SymmetricSecurityKey SigningKey { get; }
 
+        public static string ConnectionString { get; set; }
+
         public Startup(IConfiguration configuration)
         {
             this.Configuration = configuration;
             this.SigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration.GetSection("Authentication")["Key"]));
+            ConnectionString = configuration.GetSection("Database")["ConnectionString"];
 
             Console.WriteLine("Starting up the API");
         }

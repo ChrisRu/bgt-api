@@ -6,29 +6,43 @@ namespace BGTBackend.Repositories
 {
     public class MeasurementRepository : Repository<Measurement>
     {
-        public Task<IEnumerable<Measurement>> GetAll()
+        protected override Dictionary<string, string> DataMap { get; } = new Dictionary<string, string>
         {
-            return Query("SELECT * FROM meting");
+            { "meting_code", "Id" },
+            { "project_code", "ProjectId" },
+            { "oplevering", "DeliveryDate" },
+            { "bedrijf", "Company" },
+            { "begindatum", "StartDate" },
+            { "einddatum_minicomp", "EndDate" }
+        };
+
+        public IEnumerable<Measurement> GetAll()
+        {
+            return Query($@"
+                SELECT {this.GetSelects()}
+                FROM meting
+            ");
         }
 
-        public Task<Measurement> Get(int measurementId)
+        public Measurement Get(int measurementId)
         {
-            return QueryFirstOrDefault("SELECT * FROM meting WHERE meting_code = @measurementId", new { measurementId });
+            return QueryFirstOrDefault($@"
+                SELECT {this.GetSelects()}
+                FROM meting
+                WHERE meting_code = @measurementId
+            ", new { measurementId });
         }
 
-        public Task<Measurement> Add(Measurement measurement)
+        public Measurement Add(Measurement measurement)
         {
-            return Execute(@"
-                INSERT INTO meting(project_code, bedrijf, oplevering, begindatum, einddatum_minicomp)
-                VALUES(@ProjectId, @Company, @DeliveryDate, @StartDate, @EndDate)
-            ", measurement);
+            return Execute(this.GetInserts("meting"), measurement);
         }
 
-        public Task<Measurement> Edit(Measurement measurement)
+        public Measurement Edit(Measurement measurement)
         {
-            return Execute(@"
+            return Execute($@"
                 UPDATE meting
-                SET project_code = @ProjectId, bedrijf = @Company, oplevering = @DeliveryDate, begindatum = @StartDate, einddatum_minicomp = @EndDate
+                SET {this.GetUpdates()}
                 WHERE meting_code = @Id
             ", measurement);
         }

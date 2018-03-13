@@ -19,7 +19,7 @@ namespace BGTBackend.Controllers
         {
             try
             {
-                return await this._repo.GetAll();
+                return this._repo.GetAll();
             }
             catch (Exception error)
             {
@@ -34,11 +34,31 @@ namespace BGTBackend.Controllers
         {
             try
             {
-                return await this._repo.Get(id);
+                return this._repo.Get(id);
             }
             catch (Exception error)
             {
                 await this.Error(Response.HttpContext, 404, error.Message, "Project niet gevonden");
+                return null;
+            }
+        }
+
+        [HttpPut("{id}")]
+        [Authorize]
+        public async Task<Project> Edit(int id, [FromBody] Project project)
+        {
+            try
+            {
+                if (id != project.Id)
+                {
+                    throw new Exception("Id does not match");
+                }
+
+                return this._repo.Add(project);
+            }
+            catch (Exception error)
+            {
+                await this.Error(Response.HttpContext, 405, error.Message, "Kan project niet aanpassen");
                 return null;
             }
         }
@@ -49,7 +69,7 @@ namespace BGTBackend.Controllers
         {
             try
             {
-                return await this._repo.Add(project);
+                return this._repo.Add(project);
             }
             catch (Exception error)
             {

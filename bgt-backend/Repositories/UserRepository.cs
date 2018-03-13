@@ -1,33 +1,56 @@
-using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using BGTBackend.Models;
 
 namespace BGTBackend.Repositories
 {
     internal class UserRepository : Repository<User>
     {
-        public Task<IEnumerable<User>> GetAll()
+        protected override Dictionary<string, string> DataMap { get; } = new Dictionary<string, string>
         {
-            return Query("SELECT * FROM user");
+            { "gebruiker_code", "Id" },
+            { "gebruikersnaam", "Username" },
+            { "wachtwoord", "Password" },
+            { "admin", "IsAdmin" }
+        };
+
+        public IEnumerable<User> GetAll()
+        {
+            return Query($@"
+                SELECT {this.GetSelects()}
+                FROM gebruiker
+            ");
         }
 
-        public Task<User> Get(int userId)
+        public User Get(int userId)
         {
-            return QueryFirstOrDefault("SELECT * FROM user WHERE gebruikers_code = @userId", new { userId });
+            return QueryFirstOrDefault($@"
+                SELECT {this.GetSelects()}
+                FROM gebruiker
+                WHERE gebruikers_code = @userId
+            ", new { userId });
         }
 
-        public Task<User> Get(string username)
+        public User Get(string username)
         {
-            return QueryFirstOrDefault("SELECT * FROM user WHERE gebruikersnaam = @username", new { username });
+            return QueryFirstOrDefault($@"
+                SELECT {this.GetSelects()}
+                FROM gebruiker
+                WHERE gebruikersnaam = @username
+            ", new { username });
         }
 
-        public Task<User> Add(User newUser)
+        public User Add(User user)
         {
-            return Execute(@"
-                INSERT INTO user(username, password)
-                VALUES(@Username, @Password
-            ", newUser);
+            return Execute(this.GetInserts("gebruiker"), user);
+        }
+
+        public User Edit(User user)
+        {
+            return Execute($@"
+                UPDATE gebruiker
+                SET {this.GetUpdates()}
+                WHERE gebruiker_code = @Id
+            ", user);
         }
     }
 }
