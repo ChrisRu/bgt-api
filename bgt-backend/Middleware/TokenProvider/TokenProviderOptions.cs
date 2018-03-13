@@ -11,7 +11,7 @@ namespace BGTBackend.Middleware
 
         public string Audience { get; set; }
 
-        public TimeSpan Expiration { get; } = TimeSpan.FromMinutes(5);
+        public TimeSpan Expiration { get; } = TimeSpan.FromMinutes(30);
 
         public SigningCredentials SigningCredentials { get; set; }
     }

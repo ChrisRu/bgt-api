@@ -59,8 +59,11 @@ namespace BGTBackend
                 };
             });
 
-            services.AddCors(o => o.AddPolicy("DefaultPolicy",
-                builder => { builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().AllowCredentials(); }));
+            services.AddCors(
+                o => o.AddPolicy("DefaultPolicy",
+                    builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().AllowCredentials()
+                )
+            );
 
             Console.WriteLine("Set up all services");
         }
@@ -83,9 +86,9 @@ namespace BGTBackend
             }
 
             app.UseAuthentication();
+            app.UseCors("DefaultPolicy");
             app.UseMvc();
             app.UseMiddleware<TokenProviderMiddleware>(Options.Create(jwtOptions));
-            app.UseCors("DefaultPolicy");
 
             Console.WriteLine("Set up all app features");
         }

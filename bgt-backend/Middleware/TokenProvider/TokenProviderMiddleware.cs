@@ -53,6 +53,8 @@ namespace BGTBackend.Middleware
             var username = context.Request.Form["username"];
             var password = context.Request.Form["password"];
 
+            Console.WriteLine(username + ":" + password);
+
             User user;
             try
             {
