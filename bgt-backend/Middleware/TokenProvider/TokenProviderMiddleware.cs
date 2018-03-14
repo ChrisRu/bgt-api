@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -52,9 +52,7 @@ namespace BGTBackend.Middleware
         {
             var username = context.Request.Form["username"];
             var password = context.Request.Form["password"];
-
-            Console.WriteLine(username + ":" + password);
-
+            
             User user;
             try
             {
@@ -69,11 +67,8 @@ namespace BGTBackend.Middleware
                 return;
             }
 
-            Console.WriteLine(user.Username + " : " + user.IsAdmin + " : " + user.Id);
-            Console.WriteLine(password + ":" + user.Password);
-
             // TODO: Compare passwords here
-            if (password != user.Password)
+            if (!BCrypt.Net.BCrypt.Verify(password, user.Password))
             {
                 await Error(context, 401, "Gebruikersnaam of wachtwoord is incorrect");
                 return;

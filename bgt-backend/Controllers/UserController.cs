@@ -27,7 +27,7 @@ namespace BGTBackend.Controllers
             }
             catch (Exception error)
             {
-                await this.Error(Response.HttpContext, 405, error.Message, "Kan gebruiker niet aanpassen");
+                await this.Error(this.Response.HttpContext, 405, error.Message, "Kan gebruiker niet aanpassen");
                 return null;
             }
         }
@@ -42,7 +42,7 @@ namespace BGTBackend.Controllers
             }
             catch (Exception error)
             {
-                await this.Error(Response.HttpContext, 405, error.Message, "Kan niet een nieuwe gebruiker aanmaken");
+                await this.Error(this.Response.HttpContext, 405, error.Message, "Kan niet een nieuwe gebruiker aanmaken");
                 return null;
             }
         }

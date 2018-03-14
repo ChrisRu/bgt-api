@@ -41,11 +41,13 @@ namespace BGTBackend.Repositories
 
         public User Add(User user)
         {
+            user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
             return Execute(this.GetInserts("gebruiker"), user);
         }
 
         public User Edit(User user)
         {
+            user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
             return Execute($@"
                 UPDATE gebruiker
                 SET {this.GetUpdates()}
