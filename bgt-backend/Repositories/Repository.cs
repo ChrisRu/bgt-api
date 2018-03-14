@@ -17,8 +17,9 @@ namespace BGTBackend.Repositories
 
         protected string GetInserts(string tableName)
         {
-            string insertInto = string.Join(", ", this.DataMap.Select(kv => kv.Key));
-            string values = string.Join(", ", this.DataMap.Select(kv => "@" + kv.Value));
+            var data = this.DataMap.Where(kv => kv.Value != "Id").Where(kv => kv.Key.StartsWith(tableName));
+            string insertInto = string.Join(", ", data.Select(kv => kv.Key));
+            string values = string.Join(", ", data.Select(kv => "@" + kv.Value));
             return $@"
                 INSERT INTO {tableName}({insertInto})
                 VALUES({values})

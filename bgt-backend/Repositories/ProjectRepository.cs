@@ -9,14 +9,17 @@ namespace BGTBackend.Repositories
     {
         protected override Dictionary<string, string> DataMap { get; } = new Dictionary<string, string>
         {
-            { "project_code", "Id" },
-            { "bgton_nummer", "BGTonNumber" },
-            { "status", "Status" },
-            { "omschrijving", "Description" },
-            { "categorie", "Category" },
-            { "locatie_code", "Location" },
-            { "laatst_aangepast_datum", "LastEditedDate" },
-            { "laatst_aangepast_gebruiker", "LastEditedUser" }
+            { "project.project_code", "Id" },
+            { "project.bgton_nummer", "BGTonNumber" },
+            { "project.status", "Status" },
+            { "project.omschrijving", "Description" },
+            { "project.categorie", "Category" },
+            { "project.locatie_code", "LocationCode" },
+            { "project.laatst_aangepast_datum", "LastEditedDate" },
+            { "project.laatst_aangepast_gebruiker", "LastEditedUser" },
+            { "locatie.longtitude", "Longitude" },
+            { "locatie.latitude", "Latitude" },
+            { "gebruiker.gebruikersnaam", "Username" }
         };
 
         public IEnumerable<Project> GetAll()
@@ -25,6 +28,8 @@ namespace BGTBackend.Repositories
             return Query($@"
                 SELECT {this.GetSelects()}
                 FROM project
+                JOIN gebruiker on project.laatst_aangepast_gebruiker = gebruiker.gebruiker_code
+                JOIN locatie on project.locatie_code = locatie.locatie_code
             ");
         }
 
@@ -33,16 +38,18 @@ namespace BGTBackend.Repositories
             return QueryFirstOrDefault($@"
                 SELECT {this.GetSelects()}
                 FROM project
-                WHERE project_code = @projectId
+                WHERE project.project_code = @projectId
+                JOIN gebruiker on project.laatst_aangepast_gebruiker = gebruiker.gebruiker_code
+                JOIN locatie on project.locatie_code = locatie.locatie_code
             ", new { projectId });
         }
 
-        public Project Add(Project project)
+        public Project Add(ProjectPost project)
         {
             return Execute(this.GetInserts("project"), project);
         }
 
-        public Project Edit(Project project)
+        public Project Edit(ProjectPost project)
         {
             return Execute($@"
                 UPDATE project
