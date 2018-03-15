@@ -49,7 +49,7 @@ namespace BGTBackend.Controllers
 
         [HttpPut("{id}")]
         [Authorize]
-        public async Task<Project> Edit([FromBody] ProjectPost project)
+        public async Task<object> Edit([FromBody] ProjectPost project)
         {
             try
             {
@@ -67,7 +67,8 @@ namespace BGTBackend.Controllers
 
                 project.LocationCode = location.Id;
 
-                return this._repo.Add(project);
+                this._repo.Add(project);
+                return new {success = true};
             }
             catch (Exception error)
             {
@@ -79,7 +80,7 @@ namespace BGTBackend.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<Project> Create([FromBody] ProjectPost project)
+        public async Task<object> Create([FromBody] ProjectPost project)
         {
             try
             {
@@ -97,7 +98,8 @@ namespace BGTBackend.Controllers
 
                 project.LocationCode = location.Id;
 
-                return this._repo.Add(project);
+                this._repo.Add(project);
+                return new {success = true};
             }
             catch (Exception error)
             {
