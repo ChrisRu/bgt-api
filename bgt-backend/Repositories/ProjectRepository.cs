@@ -17,7 +17,7 @@ namespace BGTBackend.Repositories
             { "project.locatie_code", "LocationCode" },
             { "project.laatst_aangepast_datum", "LastEditedDate" },
             { "project.laatst_aangepast_gebruiker", "LastEditedUser" },
-            { "locatie.longtitude", "Longitude" },
+            { "locatie.longtitude", "Longtitude" },
             { "locatie.latitude", "Latitude" },
             { "gebruiker.gebruikersnaam", "Username" }
         };

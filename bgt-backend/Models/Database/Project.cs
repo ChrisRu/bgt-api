@@ -16,8 +16,12 @@ namespace BGTBackend.Models
 
         public Location Location { get; set; }
 
+        public string Latitude { get; set; }
+
+        public string Longtitude { get; set; }
+
         public DateTimeOffset? LastEditedDate { get; set; }
 
-        public User LastEditedUser { get; set; }
+        public int LastEditedUser { get; set; }
     }
 }
