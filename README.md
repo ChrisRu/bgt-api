@@ -21,4 +21,5 @@
 }
 ```
 8. Open the solution in Visual Studio
-9. Run the program and pray
+9. Run the program with `bgt-backend`, NOT `IIS Server`
+10. Pray
