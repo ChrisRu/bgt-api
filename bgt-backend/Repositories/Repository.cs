@@ -9,19 +9,40 @@ namespace BGTBackend.Repositories
 {
     public abstract class Repository<T>
     {
+        protected abstract string TableName { get; }
+
         protected abstract Dictionary<string, string> DataMap { get; }
 
-        protected string GetSelects(string inner = " ") => string.Join(", ", this.DataMap.Select(kv => kv.Key + inner + kv.Value));
+        private static string GetSelects(Dictionary<string, string> data, string inner = " ") =>
+            string.Join(", ", data.Select(kv => kv.Key + inner + kv.Value));
 
-        protected string GetUpdates() => this.GetSelects(" = @");
+        protected string GetSelects(string inner = " ") => GetSelects(this.DataMap, inner);
 
-        protected string GetInserts(string tableName)
+        protected string GetUpdates()
         {
-            var data = this.DataMap.Where(kv => kv.Value != "Id").Where(kv => kv.Key.StartsWith(tableName));
+            Dictionary<string, string> data = this.DataMap
+                .Where(kv => kv.Value != "Id")
+                .Where(kv => kv.Key.StartsWith(this.TableName))
+                .ToDictionary(i => i.Key, i => i.Value);
+
+            return $@"
+                UPDATE project
+                SET {GetSelects(data, " = @")}
+                WHERE project_code = @Id
+            ";
+        }
+
+        protected string GetInserts()
+        {
+            IEnumerable<KeyValuePair<string, string>> data = this.DataMap
+                .Where(kv => kv.Value != "Id")
+                .Where(kv => kv.Key.StartsWith(this.TableName));
+
             string insertInto = string.Join(", ", data.Select(kv => kv.Key));
             string values = string.Join(", ", data.Select(kv => "@" + kv.Value));
+
             return $@"
-                INSERT INTO {tableName}({insertInto})
+                INSERT INTO {this.TableName}({insertInto})
                 VALUES({values})
             ";
         }

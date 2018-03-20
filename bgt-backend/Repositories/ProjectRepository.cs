@@ -7,6 +7,8 @@ namespace BGTBackend.Repositories
 {
     internal class ProjectRepository : Repository<Project>
     {
+        protected override string TableName { get; } = "project";
+
         protected override Dictionary<string, string> DataMap { get; } = new Dictionary<string, string>
         {
             { "project.project_code", "Id" },
@@ -24,7 +26,6 @@ namespace BGTBackend.Repositories
 
         public IEnumerable<Project> GetAll()
         {
-            Console.WriteLine(this.GetSelects());
             return Query($@"
                 SELECT {this.GetSelects()}
                 FROM project
@@ -44,18 +45,8 @@ namespace BGTBackend.Repositories
             ", new { projectId });
         }
 
-        public Project Add(ProjectPost project)
-        {
-            return Execute(this.GetInserts("project"), project);
-        }
+        public Project Add(ProjectPost project) => Execute(this.GetInserts(), project);
 
-        public Project Edit(ProjectPost project)
-        {
-            return Execute($@"
-                UPDATE project
-                SET {this.GetUpdates()}
-                WHERE project_code = @Id
-            ", project);
-        }
+        public Project Edit(ProjectPost project) => Execute(this.GetUpdates(), project);
     }
 }

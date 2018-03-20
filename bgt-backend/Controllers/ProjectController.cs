@@ -27,7 +27,7 @@ namespace BGTBackend.Controllers
             }
             catch (Exception error)
             {
-                await this.Error(Response.HttpContext, 404, error.Message, "Kan niet alle projecten ophalen");
+                await Error(Response.HttpContext, 404, error.Message, "Kan niet alle projecten ophalen");
                 return null;
             }
         }
@@ -42,38 +42,32 @@ namespace BGTBackend.Controllers
             }
             catch (Exception error)
             {
-                await this.Error(Response.HttpContext, 404, error.Message, "Project niet gevonden");
+                await Error(Response.HttpContext, 404, error.Message, "Project niet gevonden");
                 return null;
             }
         }
 
         [HttpPut("{id}")]
         [Authorize]
-        public async Task<object> Edit([FromBody] ProjectPost project)
+        public async Task<object> Edit(int id, [FromBody] ProjectPost project)
         {
             try
             {
-                project.LastEditedUser = this._userRepo.Get("test").Id;
-                project.LastEditedDate = DateTimeOffset.Now;
-
-                LocationPost locationPost = await Geocode(project.Location);
-                Location location = this._locationRepo.Get(locationPost.Longtitude, locationPost.Latitude);
-
-                if (location == null)
+                if (id != project.Id)
                 {
-                    this._locationRepo.Add(locationPost);
-                    location = this._locationRepo.Get(locationPost.Longtitude, locationPost.Latitude);
+                    throw new Exception("Id van het project is anders dan de endpoint");
                 }
 
-                project.LocationCode = location.Id;
+                project.LastEditedUser = this._userRepo.Get(AuthenticationController.GetCurrentUsername(this.HttpContext)).Id;
+                project.LastEditedDate = DateTimeOffset.Now;
+                project.LocationCode = (await GetLocation(project.Location)).Id;
 
-                this._repo.Add(project);
+                this._repo.Edit(project);
                 return new {success = true};
             }
             catch (Exception error)
             {
-                Console.WriteLine(error.Message);
-                await this.Error(Response.HttpContext, 405, error.Message, "Kan project niet aanpassen");
+                await Error(Response.HttpContext, 405, error.Message, "Kan project niet wijzigen: " + error.Message);
                 return null;
             }
         }
@@ -84,29 +78,32 @@ namespace BGTBackend.Controllers
         {
             try
             {
-                project.LastEditedUser = this._userRepo.Get("test").Id;
+                project.LastEditedUser = this._userRepo.Get(AuthenticationController.GetCurrentUsername(this.HttpContext)).Id;
                 project.LastEditedDate = DateTimeOffset.Now;
-
-                LocationPost locationPost = await Geocode(project.Location);
-                Location location = this._locationRepo.Get(locationPost.Longtitude, locationPost.Latitude);
-
-                if (location == null)
-                {
-                    this._locationRepo.Add(locationPost);
-                    location = this._locationRepo.Get(locationPost.Longtitude, locationPost.Latitude);
-                }
-
-                project.LocationCode = location.Id;
+                project.LocationCode = (await GetLocation(project.Location)).Id;
 
                 this._repo.Add(project);
                 return new {success = true};
             }
             catch (Exception error)
             {
-                Console.WriteLine(error.Message);
-                await this.Error(Response.HttpContext, 405, error.Message, "Kan geen nieuw project aanmaken");
+                await Error(Response.HttpContext, 405, error.Message, "Kan geen nieuw project aanmaken: " + error.Message);
                 return null;
             }
+        }
+
+        private async Task<Location> GetLocation(string location)
+        {
+            LocationPost locationPost = await Geocode(location);
+            Location dbLocation = this._locationRepo.Get(locationPost.Longtitude, locationPost.Latitude);
+
+            if (dbLocation == null)
+            {
+                this._locationRepo.Add(locationPost);
+                dbLocation = this._locationRepo.Get(locationPost.Longtitude, locationPost.Latitude);
+            }
+
+            return dbLocation;
         }
 
         private static async Task<LocationPost> Geocode(string location)
@@ -117,6 +114,11 @@ namespace BGTBackend.Controllers
 
                 string json = await httpClient.GetStringAsync($"https://nominatim.openstreetmap.org/search/{location}?format=json&limit=1");
                 dynamic data = JsonConvert.DeserializeObject(json);
+
+                if (data == null)
+                {
+                    throw new Exception("Locatie niet gevonden");
+                }
 
                 return new LocationPost { Latitude = data[0].lat, Longtitude = data[0].lon };
             }

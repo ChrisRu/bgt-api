@@ -20,14 +20,14 @@ namespace BGTBackend.Controllers
             {
                 if (id != user.Id)
                 {
-                    throw new Exception("Id does not match");
+                    throw new Exception("URL klopt niet met de data");
                 }
 
                 return this._repo.Edit(user);
             }
             catch (Exception error)
             {
-                await this.Error(this.Response.HttpContext, 405, error.Message, "Kan gebruiker niet aanpassen");
+                await Error(this.Response.HttpContext, 405, error.Message, "Kan gebruiker niet aanpassen: " + error.Message);
                 return null;
             }
         }
@@ -42,7 +42,7 @@ namespace BGTBackend.Controllers
             }
             catch (Exception error)
             {
-                await this.Error(this.Response.HttpContext, 405, error.Message, "Kan niet een nieuwe gebruiker aanmaken");
+                await Error(this.Response.HttpContext, 405, error.Message, "Kan niet een nieuwe gebruiker aanmaken: " + error.Message);
                 return null;
             }
         }

@@ -16,7 +16,7 @@ namespace BGTBackend
     {
         private SymmetricSecurityKey SigningKey { get; }
 
-        public static string ConnectionString { get; set; }
+        public static string ConnectionString { get; private set; }
 
         public Startup(IConfiguration configuration)
         {

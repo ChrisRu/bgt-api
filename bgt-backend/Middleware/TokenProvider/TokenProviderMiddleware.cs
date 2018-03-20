@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.IO;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using BGTBackend.Models;
@@ -39,20 +40,31 @@ namespace BGTBackend.Middleware
                 return Error(context, 405, "Gebruik een POST request om log in data mee te sturen");
             }
 
-            if (!context.Request.HasFormContentType)
-            {
-                return Error(context, 400, "Vergeten gebruikersinformatie mee te sturen");
-            }
-
             return this.GenerateToken(context);
         }
 
         [ValidateAntiForgeryToken]
         private async Task GenerateToken(HttpContext context)
         {
-            var username = context.Request.Form["username"];
-            var password = context.Request.Form["password"];
-            
+            string username;
+            string password;
+
+            try
+            {
+                using (var sr = new StreamReader(context.Request.Body))
+                using (var jsonTextReader = new JsonTextReader(sr))
+                {
+                    dynamic response = new JsonSerializer().Deserialize(jsonTextReader);
+                    username = response.username;
+                    password = response.password;
+                }
+            }
+            catch
+            {
+                await Error(context, 405, "Aanvraag is incorrect, kan inhoud niet lezen");
+                return;
+            }
+
             User user;
             try
             {
@@ -97,7 +109,7 @@ namespace BGTBackend.Middleware
 
             await Send(context, new
             {
-                token = encodedJwt,
+                access_token = encodedJwt,
                 expires = (int) this._options.Expiration.TotalSeconds
             });
         }

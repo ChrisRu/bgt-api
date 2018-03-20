@@ -5,6 +5,8 @@ namespace BGTBackend.Repositories
 {
     internal class UserRepository : Repository<User>
     {
+        protected override string TableName { get; } = "gebruiker";
+
         protected override Dictionary<string, string> DataMap { get; } = new Dictionary<string, string>
         {
             { "gebruiker_code", "Id" },
@@ -42,7 +44,7 @@ namespace BGTBackend.Repositories
         public User Add(User user)
         {
             user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
-            return Execute(this.GetInserts("gebruiker"), user);
+            return Execute(this.GetInserts(), user);
         }
 
         public User Edit(User user)

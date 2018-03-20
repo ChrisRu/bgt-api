@@ -6,6 +6,8 @@ namespace BGTBackend.Repositories
 {
     internal class LocationRepository : Repository<Location>
     {
+        protected override string TableName { get; } = "locatie";
+
         protected override Dictionary<string, string> DataMap { get; } = new Dictionary<string, string>
         {
             { "locatie.locatie_code", "Id" },
@@ -39,18 +41,8 @@ namespace BGTBackend.Repositories
             ", new { locationId });
         }
 
-        public Location Add(LocationPost location)
-        {
-            return Execute(this.GetInserts("locatie"), location);
-        }
+        public Location Add(LocationPost location) => Execute(this.GetInserts(), location);
 
-        public Location Edit(int id, LocationPost location)
-        {
-            return Execute($@"
-                UPDATE locatie
-                SET {this.GetUpdates()}
-                WHERE locatie_code = @id
-            ", new { id });
-        }
+        public Location Edit(LocationPost location) => Execute(this.GetUpdates(), location);
     }
 }

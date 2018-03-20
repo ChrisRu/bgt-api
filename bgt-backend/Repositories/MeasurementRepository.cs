@@ -6,6 +6,8 @@ namespace BGTBackend.Repositories
 {
     public class MeasurementRepository : Repository<Measurement>
     {
+        protected override string TableName { get; } = "meting";
+
         protected override Dictionary<string, string> DataMap { get; } = new Dictionary<string, string>
         {
             { "meting_code", "Id" },
@@ -33,18 +35,8 @@ namespace BGTBackend.Repositories
             ", new { measurementId });
         }
 
-        public Measurement Add(Measurement measurement)
-        {
-            return Execute(this.GetInserts("meting"), measurement);
-        }
+        public Measurement Add(Measurement measurement) => Execute(this.GetInserts(), measurement);
 
-        public Measurement Edit(Measurement measurement)
-        {
-            return Execute($@"
-                UPDATE meting
-                SET {this.GetUpdates()}
-                WHERE meting_code = @Id
-            ", measurement);
-        }
+        public Measurement Edit(Measurement measurement) => Execute(this.GetUpdates(), measurement);
     }
 }

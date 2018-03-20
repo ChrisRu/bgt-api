@@ -4,6 +4,8 @@ namespace BGTBackend.Models
 {
     public class ProjectPost
     {
+        public int? Id { get; set; }
+
         public string BgtOnNumber { get; set; }
 
         public string Status { get; set; }
