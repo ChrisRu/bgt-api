@@ -58,12 +58,14 @@ namespace BGTBackend.Controllers
                     throw new Exception("Id van het project is anders dan de endpoint");
                 }
 
+                Project previousProject = this._repo.Get(id);
+
                 project.LastEditedUser = this._userRepo.Get(AuthenticationController.GetCurrentUsername(this.HttpContext)).Id;
                 project.LastEditedDate = DateTimeOffset.Now;
-                project.LocationCode = (await GetLocation(project.Location)).Id;
+                project.LocationCode = !string.IsNullOrEmpty(project.Location) ? (await this.GetLocation(project.Location)).Id : previousProject.Location.Id;
 
                 this._repo.Edit(project);
-                return new {success = true};
+                return new { success = true };
             }
             catch (Exception error)
             {
