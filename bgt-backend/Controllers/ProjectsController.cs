@@ -47,14 +47,12 @@ namespace BGTBackend.Controllers
             }
         }
 
-        [HttpPut("{id}")]
+        [HttpPatch("{id}")]
         [Authorize]
         public async Task<Response> Edit(int id, [FromBody] ProjectPost project)
         {
             try
             {
-                if (id != project.Id) throw new Exception("Id van het project is anders dan de endpoint");
-
                 Project previousProject = this._repo.Get(id);
 
                 project.LastEditedUser =
