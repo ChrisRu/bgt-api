@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using BGTBackend.Models;
 
 namespace BGTBackend.Repositories
@@ -10,9 +9,9 @@ namespace BGTBackend.Repositories
 
         protected override Dictionary<string, string> DataMap { get; } = new Dictionary<string, string>
         {
-            { "locatie.locatie_code", "Id" },
-            { "locatie.longtitude", "Longtitude" },
-            { "locatie.latitude", "Latitude" }
+            {"locatie.locatie_code", "Id"},
+            {"locatie.longtitude", "Longtitude"},
+            {"locatie.latitude", "Latitude"}
         };
 
         public IEnumerable<Location> GetAll()
@@ -29,7 +28,7 @@ namespace BGTBackend.Repositories
                 SELECT {this.GetSelects()}
                 FROM locatie
                 WHERE latitude = @lat AND longtitude = @lon
-            ", new { lon, lat });
+            ", new {lon, lat});
         }
 
         public Location Get(int locationId)
@@ -38,11 +37,17 @@ namespace BGTBackend.Repositories
                 SELECT {this.GetSelects()}
                 FROM locatie
                 WHERE locatie_code = @locationId
-            ", new { locationId });
+            ", new {locationId});
         }
 
-        public Location Add(LocationPost location) => Execute(this.GetInserts(), location);
+        public Location Add(LocationPost location)
+        {
+            return Execute(this.GetInserts(), location);
+        }
 
-        public Location Edit(LocationPost location) => Execute(this.GetUpdates(), location);
+        public Location Edit(LocationPost location)
+        {
+            return Execute(this.GetUpdates(), location);
+        }
     }
 }

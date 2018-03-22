@@ -1,24 +1,20 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Authorization;
+using BGTBackend.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BGTBackend.Controllers
 {
-    [Route("api/authenticated")]
     public class AuthenticationController : Controller
     {
         [HttpGet]
-        [Authorize]
-        public object Get()
+        [Route("[action]")]
+        public Response Authenticated()
         {
-            return new
+            return new Response(this.Response, new
             {
-                authorized = this.User.Identity.IsAuthenticated
-            };
+                authenticated = this.User.Identity.IsAuthenticated
+            });
         }
 
         public static string GetCurrentUsername(HttpContext context)

@@ -13,10 +13,15 @@ namespace BGTBackend.Repositories
 
         protected abstract Dictionary<string, string> DataMap { get; }
 
-        private static string GetSelects(Dictionary<string, string> data, string inner = " ") =>
-            string.Join(", ", data.Select(kv => kv.Key + inner + kv.Value));
+        private static string GetSelects(Dictionary<string, string> data, string inner = " ")
+        {
+            return string.Join(", ", data.Select(kv => kv.Key + inner + kv.Value));
+        }
 
-        protected string GetSelects(string inner = " ") => GetSelects(this.DataMap, inner);
+        protected string GetSelects(string inner = " ")
+        {
+            return GetSelects(this.DataMap, inner);
+        }
 
         protected string GetUpdates()
         {
@@ -49,14 +54,11 @@ namespace BGTBackend.Repositories
 
         protected static T QueryFirstOrDefault(string sql, object parameters = null)
         {
-            using (var connection = CreateConnection())
+            using (IDbConnection connection = CreateConnection())
             {
                 bool connected = Connect(connection);
 
-                if (connected == false)
-                {
-                    throw new Exception("Can't connect to database");
-                }
+                if (connected == false) throw new Exception("Can't connect to database");
 
                 LogQuery("Querying from database...", sql);
 
@@ -66,14 +68,11 @@ namespace BGTBackend.Repositories
 
         protected static IEnumerable<T> Query(string sql, object parameters = null)
         {
-            using (var connection = CreateConnection())
+            using (IDbConnection connection = CreateConnection())
             {
                 bool connected = Connect(connection);
 
-                if (connected == false)
-                {
-                    throw new Exception("Can't connect to database");
-                }
+                if (connected == false) throw new Exception("Can't connect to database");
 
                 LogQuery("Querying from database...", sql);
 
@@ -83,14 +82,11 @@ namespace BGTBackend.Repositories
 
         protected static T Execute(string sql, object parameters = null)
         {
-            using (var connection = CreateConnection())
+            using (IDbConnection connection = CreateConnection())
             {
                 bool connected = Connect(connection);
 
-                if (connected == false)
-                {
-                    throw new Exception("Can't connect to database");
-                }
+                if (connected == false) throw new Exception("Can't connect to database");
 
                 LogQuery("Executing on database...", sql);
 

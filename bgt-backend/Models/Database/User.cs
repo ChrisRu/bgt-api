@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using Newtonsoft.Json;
-
-namespace BGTBackend.Models
+﻿namespace BGTBackend.Models
 {
     public class User
     {

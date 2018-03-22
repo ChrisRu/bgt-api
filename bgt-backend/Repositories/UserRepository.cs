@@ -9,10 +9,10 @@ namespace BGTBackend.Repositories
 
         protected override Dictionary<string, string> DataMap { get; } = new Dictionary<string, string>
         {
-            { "gebruiker_code", "Id" },
-            { "gebruikersnaam", "Username" },
-            { "wachtwoord", "Password" },
-            { "admin", "IsAdmin" }
+            {"gebruiker_code", "Id"},
+            {"gebruikersnaam", "Username"},
+            {"wachtwoord", "Password"},
+            {"admin", "IsAdmin"}
         };
 
         public IEnumerable<User> GetAll()
@@ -29,7 +29,7 @@ namespace BGTBackend.Repositories
                 SELECT {this.GetSelects()}
                 FROM gebruiker
                 WHERE gebruikers_code = @userId
-            ", new { userId });
+            ", new {userId});
         }
 
         public User Get(string username)
@@ -38,7 +38,7 @@ namespace BGTBackend.Repositories
                 SELECT {this.GetSelects()}
                 FROM gebruiker
                 WHERE gebruikersnaam = @username
-            ", new { username });
+            ", new {username});
         }
 
         public User Add(User user)

@@ -4,7 +4,7 @@
 
 |route|type|post|response|
 |-----|----|----|--------|
-| ~/authenticated   | GET  |-| `{ authorized: bool }`|
+| ~/authenticated   | GET  |-| `{ authenticated: bool }`|
 | ~/authenticate    | POST | `{ username, password }` | `{ access_token, expires }`
 | ~/projects        | GET  |-| `[ ...{ BGTonNumber, Status, Description, Category, Location } ]`|
 | ~/projects/\{id\} | GET  |-| `{ BGTonNumber, Status, Description, Category, Location }`|

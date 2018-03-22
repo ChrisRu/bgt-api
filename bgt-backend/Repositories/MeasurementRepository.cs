@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using BGTBackend.Models;
 
 namespace BGTBackend.Repositories
@@ -10,12 +9,12 @@ namespace BGTBackend.Repositories
 
         protected override Dictionary<string, string> DataMap { get; } = new Dictionary<string, string>
         {
-            { "meting_code", "Id" },
-            { "project_code", "ProjectId" },
-            { "oplevering", "DeliveryDate" },
-            { "bedrijf", "Company" },
-            { "begindatum", "StartDate" },
-            { "einddatum_minicomp", "EndDate" }
+            {"meting_code", "Id"},
+            {"project_code", "ProjectId"},
+            {"oplevering", "DeliveryDate"},
+            {"bedrijf", "Company"},
+            {"begindatum", "StartDate"},
+            {"einddatum_minicomp", "EndDate"}
         };
 
         public IEnumerable<Measurement> GetAll()
@@ -32,11 +31,17 @@ namespace BGTBackend.Repositories
                 SELECT {this.GetSelects()}
                 FROM meting
                 WHERE meting_code = @measurementId
-            ", new { measurementId });
+            ", new {measurementId});
         }
 
-        public Measurement Add(Measurement measurement) => Execute(this.GetInserts(), measurement);
+        public Measurement Add(Measurement measurement)
+        {
+            return Execute(this.GetInserts(), measurement);
+        }
 
-        public Measurement Edit(Measurement measurement) => Execute(this.GetUpdates(), measurement);
+        public Measurement Edit(Measurement measurement)
+        {
+            return Execute(this.GetUpdates(), measurement);
+        }
     }
 }

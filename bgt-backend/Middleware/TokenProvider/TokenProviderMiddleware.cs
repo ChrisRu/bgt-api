@@ -31,14 +31,10 @@ namespace BGTBackend.Middleware
         {
             // If path does not match /authentication, continue
             if (!context.Request.Path.Equals(this._options.Path, StringComparison.OrdinalIgnoreCase))
-            {
                 return this._next(context);
-            }
 
             if (context.Request.Method != "POST")
-            {
                 return Error(context, 405, "Gebruik een POST request om log in data mee te sturen");
-            }
 
             return this.GenerateToken(context);
         }
@@ -51,8 +47,8 @@ namespace BGTBackend.Middleware
 
             try
             {
-                using (var sr = new StreamReader(context.Request.Body))
-                using (var jsonTextReader = new JsonTextReader(sr))
+                using (StreamReader sr = new StreamReader(context.Request.Body))
+                using (JsonTextReader jsonTextReader = new JsonTextReader(sr))
                 {
                     dynamic response = new JsonSerializer().Deserialize(jsonTextReader);
                     username = response.username;
@@ -61,7 +57,7 @@ namespace BGTBackend.Middleware
             }
             catch
             {
-                await Error(context, 405, "Aanvraag is incorrect, kan inhoud niet lezen");
+                await Error(context, 405, "Kan data niet lezen");
                 return;
             }
 
@@ -86,7 +82,7 @@ namespace BGTBackend.Middleware
                 return;
             }
 
-            var now = DateTime.UtcNow;
+            DateTime now = DateTime.UtcNow;
 
             List<Claim> claims = new List<Claim>
             {
@@ -96,7 +92,7 @@ namespace BGTBackend.Middleware
                     ClaimValueTypes.Integer64)
             };
 
-            var jwt = new JwtSecurityToken(
+            JwtSecurityToken jwt = new JwtSecurityToken(
                 this._options.Issuer,
                 this._options.Audience,
                 claims,
@@ -117,13 +113,14 @@ namespace BGTBackend.Middleware
         private static Task Send(HttpContext context, object message)
         {
             context.Response.ContentType = "application/json";
-            return context.Response.WriteAsync(JsonConvert.SerializeObject(message));
+            return context.Response.WriteAsync(JsonConvert.SerializeObject(new Response(context.Response, message)));
         }
 
         private static Task Error(HttpContext context, int code, string message)
         {
-            context.Response.StatusCode = code;
-            return Send(context, new {error = message});
+            context.Response.ContentType = "application/json";
+            return context.Response.WriteAsync(
+                JsonConvert.SerializeObject(new Response(context.Response, new Error(code, message))));
         }
     }
 }

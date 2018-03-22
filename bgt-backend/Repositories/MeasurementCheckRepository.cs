@@ -23,11 +23,17 @@ namespace BGTBackend.Repositories
                 SELECT {this.GetSelects()}
                 FROM controle_meting
                 WHERE controle_meting_code = @measurementCheckId
-            ", new { measurementCheckId });
+            ", new {measurementCheckId});
         }
 
-        public MeasurementCheck Add(MeasurementCheck measurementCheck) => Execute(this.GetInserts(), measurementCheck);
+        public MeasurementCheck Add(MeasurementCheck measurementCheck)
+        {
+            return Execute(this.GetInserts(), measurementCheck);
+        }
 
-        public MeasurementCheck Edit(MeasurementCheck measurementCheck) => Execute(this.GetUpdates(), measurementCheck);
+        public MeasurementCheck Edit(MeasurementCheck measurementCheck)
+        {
+            return Execute(this.GetUpdates(), measurementCheck);
+        }
     }
 }

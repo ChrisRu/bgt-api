@@ -5,7 +5,7 @@ namespace BGTBackend.Middleware
 {
     internal class TokenProviderOptions
     {
-        public string Path { get; } = "/api/authenticate";
+        public string Path { get; } = "/authenticate";
 
         public string Issuer { get; set; }
 

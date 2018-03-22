@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using BGTBackend.Models;
 
 namespace BGTBackend.Repositories
@@ -11,17 +9,17 @@ namespace BGTBackend.Repositories
 
         protected override Dictionary<string, string> DataMap { get; } = new Dictionary<string, string>
         {
-            { "project.project_code", "Id" },
-            { "project.bgton_nummer", "BGTonNumber" },
-            { "project.status", "Status" },
-            { "project.omschrijving", "Description" },
-            { "project.categorie", "Category" },
-            { "project.locatie_code", "LocationCode" },
-            { "project.laatst_aangepast_datum", "LastEditedDate" },
-            { "project.laatst_aangepast_gebruiker", "LastEditedUser" },
-            { "locatie.longtitude", "Longtitude" },
-            { "locatie.latitude", "Latitude" },
-            { "gebruiker.gebruikersnaam", "Username" }
+            {"project.project_code", "Id"},
+            {"project.bgton_nummer", "BGTonNumber"},
+            {"project.status", "Status"},
+            {"project.omschrijving", "Description"},
+            {"project.categorie", "Category"},
+            {"project.locatie_code", "LocationCode"},
+            {"project.laatst_aangepast_datum", "LastEditedDate"},
+            {"project.laatst_aangepast_gebruiker", "LastEditedUser"},
+            {"locatie.longtitude", "Longtitude"},
+            {"locatie.latitude", "Latitude"},
+            {"gebruiker.gebruikersnaam", "Username"}
         };
 
         public IEnumerable<Project> GetAll()
@@ -42,11 +40,17 @@ namespace BGTBackend.Repositories
                 WHERE project.project_code = @projectId
                 JOIN gebruiker on project.laatst_aangepast_gebruiker = gebruiker.gebruiker_code
                 JOIN locatie on project.locatie_code = locatie.locatie_code
-            ", new { projectId });
+            ", new {projectId});
         }
 
-        public Project Add(ProjectPost project) => Execute(this.GetInserts(), project);
+        public Project Add(ProjectPost project)
+        {
+            return Execute(this.GetInserts(), project);
+        }
 
-        public Project Edit(ProjectPost project) => Execute(this.GetUpdates(), project);
+        public Project Edit(ProjectPost project)
+        {
+            return Execute(this.GetUpdates(), project);
+        }
     }
 }

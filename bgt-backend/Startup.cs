@@ -8,24 +8,26 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
 namespace BGTBackend
 {
     internal class Startup
     {
-        private SymmetricSecurityKey SigningKey { get; }
-
-        public static string ConnectionString { get; private set; }
-
         public Startup(IConfiguration configuration)
         {
             this.Configuration = configuration;
-            this.SigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration.GetSection("Authentication")["Key"]));
+            this.SigningKey =
+                new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration.GetSection("Authentication")["Key"]));
             ConnectionString = configuration.GetSection("Database")["ConnectionString"];
 
             Console.WriteLine("Starting up the API");
         }
+
+        private SymmetricSecurityKey SigningKey { get; }
+
+        public static string ConnectionString { get; private set; }
 
         private IConfiguration Configuration { get; }
 
@@ -36,28 +38,30 @@ namespace BGTBackend
             {
                 options.SerializerSettings.ContractResolver =
                     new CamelCasePropertyNamesContractResolver();
+                options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
             });
 
             IConfigurationSection auth = this.Configuration.GetSection("Authentication");
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(
+                JwtBearerDefaults.AuthenticationScheme, options =>
                 {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = this.SigningKey,
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = this.SigningKey,
 
-                    ValidateIssuer = true,
-                    ValidIssuer = auth["Issuer"],
+                        ValidateIssuer = true,
+                        ValidIssuer = auth["Issuer"],
 
-                    ValidateAudience = true,
-                    ValidAudience = auth["Audience"],
+                        ValidateAudience = true,
+                        ValidAudience = auth["Audience"],
 
-                    ValidateLifetime = true,
+                        ValidateLifetime = true,
 
-                    ClockSkew = TimeSpan.Zero
-                };
-            });
+                        ClockSkew = TimeSpan.Zero
+                    };
+                });
 
             services.AddCors(
                 o => o.AddPolicy("DefaultPolicy",
@@ -73,17 +77,14 @@ namespace BGTBackend
         {
             IConfigurationSection auth = this.Configuration.GetSection("Authentication");
 
-            var jwtOptions = new TokenProviderOptions
+            TokenProviderOptions jwtOptions = new TokenProviderOptions
             {
                 Audience = auth["Audience"],
                 Issuer = auth["Issuer"],
                 SigningCredentials = new SigningCredentials(this.SigningKey, SecurityAlgorithms.HmacSha256)
             };
 
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
+            if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
 
             app.UseAuthentication();
             app.UseCors("DefaultPolicy");
