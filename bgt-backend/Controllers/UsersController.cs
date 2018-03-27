@@ -21,6 +21,7 @@ namespace BGTBackend.Controllers
             {
                 if (id != user.Id) throw new Exception("URL klopt niet met de data");
 
+                user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
                 return new Response(this.Response, this._repo.Edit(user));
             }
             catch (Exception error)
@@ -36,6 +37,7 @@ namespace BGTBackend.Controllers
         {
             try
             {
+                user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
                 return new Response(this.Response, this._repo.Add(user));
             }
             catch (Exception error)

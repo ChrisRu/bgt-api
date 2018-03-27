@@ -13,6 +13,33 @@ namespace BGTBackend.Repositories
 
         protected abstract Dictionary<string, string> DataMap { get; }
 
+        public IEnumerable<T> GetAll()
+        {
+            return Query($@"
+                SELECT {this.GetSelects()}
+                FROM {this.TableName}
+            ");
+        }
+
+        public T Get(int id)
+        {
+            return QueryFirstOrDefault($@"
+                SELECT {this.GetSelects()}
+                FROM {this.TableName}
+                WHERE {this.TableName}_code = @id
+            ", new {id});
+        }
+
+        public virtual T Add(T item)
+        {
+            return Execute(this.GetInserts(), item);
+        }
+
+        public virtual T Edit(T item)
+        {
+            return Execute(this.GetUpdates(), item);
+        }
+
         private static string GetSelects(Dictionary<string, string> data, string inner = " ")
         {
             return string.Join(", ", data.Select(kv => kv.Key + inner + kv.Value));

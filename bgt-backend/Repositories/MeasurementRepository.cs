@@ -16,32 +16,5 @@ namespace BGTBackend.Repositories
             {"begindatum", "StartDate"},
             {"einddatum_minicomp", "EndDate"}
         };
-
-        public IEnumerable<Measurement> GetAll()
-        {
-            return Query($@"
-                SELECT {this.GetSelects()}
-                FROM meting
-            ");
-        }
-
-        public Measurement Get(int measurementId)
-        {
-            return QueryFirstOrDefault($@"
-                SELECT {this.GetSelects()}
-                FROM meting
-                WHERE meting_code = @measurementId
-            ", new {measurementId});
-        }
-
-        public Measurement Add(Measurement measurement)
-        {
-            return Execute(this.GetInserts(), measurement);
-        }
-
-        public Measurement Edit(Measurement measurement)
-        {
-            return Execute(this.GetUpdates(), measurement);
-        }
     }
 }

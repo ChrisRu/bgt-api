@@ -15,23 +15,6 @@ namespace BGTBackend.Repositories
             {"admin", "IsAdmin"}
         };
 
-        public IEnumerable<User> GetAll()
-        {
-            return Query($@"
-                SELECT {this.GetSelects()}
-                FROM gebruiker
-            ");
-        }
-
-        public User Get(int userId)
-        {
-            return QueryFirstOrDefault($@"
-                SELECT {this.GetSelects()}
-                FROM gebruiker
-                WHERE gebruikers_code = @userId
-            ", new {userId});
-        }
-
         public User Get(string username)
         {
             return QueryFirstOrDefault($@"

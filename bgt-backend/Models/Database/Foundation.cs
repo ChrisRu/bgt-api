@@ -5,20 +5,20 @@ namespace BGTBackend.Models
 {
     public class Foundation
     {
-        [Column("grondslag_code")] public int Id { get; set; }
+        public int Id { get; set; }
 
-        [Column("project_code")] public int ProjectId { get; set; }
+        public int ProjectId { get; set; }
 
-        [Column("naam_meten")] public string MeasurementName { get; set; }
+        public string MeasurementName { get; set; }
 
-        [Column("naam_rekenen")] public string MeasurementCalculation { get; set; }
+        public string MeasurementCalculation { get; set; }
 
-        [Column("begindatum")] public DateTimeOffset? StartDate { get; set; }
+        public DateTimeOffset? StartDate { get; set; }
 
-        [Column("einddatum")] public DateTimeOffset? EndDate { get; set; }
+        public DateTimeOffset? EndDate { get; set; }
 
-        [Column("uren_meten")] public decimal HoursMeasuring { get; set; }
+        public decimal HoursMeasuring { get; set; }
 
-        [Column("uren_rekenen")] public decimal HoursCalculating { get; set; }
+        public decimal HoursCalculating { get; set; }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace BGTBackend.Controllers
 {
-    public class Controller : Microsoft.AspNetCore.Mvc.Controller
+    public abstract class Controller : Microsoft.AspNetCore.Mvc.Controller
     {
     }
 }

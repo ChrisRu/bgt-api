@@ -5,14 +5,14 @@ namespace BGTBackend.Models
 {
     public class EndCheck
     {
-        [Column("eind_controle_code")] public int Id { get; set; }
+        public int Id { get; set; }
 
-        [Column("project_code")] public int ProjectId { get; set; }
+        public int ProjectId { get; set; }
 
-        [Column("naam")] public string Name { get; set; }
+        public string Name { get; set; }
 
-        [Column("uren")] public decimal? Hours { get; set; }
+        public decimal? Hours { get; set; }
 
-        [Column("einddatum")] public DateTimeOffset? EndDate { get; set; }
+        public DateTimeOffset? EndDate { get; set; }
     }
 }

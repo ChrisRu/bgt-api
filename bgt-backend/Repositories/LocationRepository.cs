@@ -14,14 +14,6 @@ namespace BGTBackend.Repositories
             {"locatie.latitude", "Latitude"}
         };
 
-        public IEnumerable<Location> GetAll()
-        {
-            return Query($@"
-                SELECT {this.GetSelects()}
-                FROM locatie
-            ");
-        }
-
         public Location Get(string lon, string lat)
         {
             return QueryFirstOrDefault($@"
@@ -29,25 +21,6 @@ namespace BGTBackend.Repositories
                 FROM locatie
                 WHERE latitude = @lat AND longtitude = @lon
             ", new {lon, lat});
-        }
-
-        public Location Get(int locationId)
-        {
-            return QueryFirstOrDefault($@"
-                SELECT {this.GetSelects()}
-                FROM locatie
-                WHERE locatie_code = @locationId
-            ", new {locationId});
-        }
-
-        public Location Add(LocationPost location)
-        {
-            return Execute(this.GetInserts(), location);
-        }
-
-        public Location Edit(LocationPost location)
-        {
-            return Execute(this.GetUpdates(), location);
         }
     }
 }
