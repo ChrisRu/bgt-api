@@ -20,8 +20,6 @@ namespace BGTBackend.Controllers
         private const string ReverseSearchURL =
             "https://nominatim.openstreetmap.org/reverse?format=jsonv2&addressdetails=1&accept-language=nl&email=16034198@student.hhs.nl";
 
-        private readonly MemoryCache _memoryCache = new MemoryCache(new MemoryCacheOptions());
-
         [HttpGet]
         [Route("[action]")]
         [Authorize]
@@ -31,7 +29,7 @@ namespace BGTBackend.Controllers
             string url = $"{SearchURL.Replace("{q}", location)}";
             try
             {
-                return new Response(this.Response, await this.Request(url));
+                return new Response(this.Response, await Request(url));
             }
             catch (Exception error)
             {
@@ -50,7 +48,7 @@ namespace BGTBackend.Controllers
             string url = $"{ReverseSearchURL}&lat={lat}&lon={lon}";
             try
             {
-                return new Response(this.Response, await this.Request(url));
+                return new Response(this.Response, await Request(url));
             }
             catch (Exception error)
             {
@@ -59,9 +57,9 @@ namespace BGTBackend.Controllers
             }
         }
 
-        private async Task<object> Request(string url)
+        private static async Task<object> Request(string url)
         {
-            object res = this._memoryCache.Get(url);
+            object res = Startup.MemoryCache.Get(url);
             if (res != null) return res;
 
             HttpWebRequest request = (HttpWebRequest) WebRequest.Create(url);
@@ -73,7 +71,7 @@ namespace BGTBackend.Controllers
             using (StreamReader reader = new StreamReader(stream))
             {
                 object result = JsonConvert.DeserializeObject(await reader.ReadToEndAsync());
-                this._memoryCache.Set(url, result, TimeSpan.FromHours(1));
+                Startup.MemoryCache.Set(url, result, TimeSpan.FromHours(1));
                 return result;
             }
         }
