@@ -2,6 +2,7 @@
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
+using System.Web;
 using BGTBackend.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,10 +15,10 @@ namespace BGTBackend.Controllers
     public class GeocodingController : Controller
     {
         private const string SearchURL =
-            "https://nominatim.openstreetmap.org/search/nl/den haag/{q}?format=jsonv2&addressdetails=1&accept-language=nl";
+            "https://nominatim.openstreetmap.org/search/nl/den haag/{q}?format=jsonv2&addressdetails=1&accept-language=nl&email=16034198@student.hhs.nl";
 
         private const string ReverseSearchURL =
-            "https://nominatim.openstreetmap.org/reverse?format=jsonv2&addressdetails=1&accept-language=nl";
+            "https://nominatim.openstreetmap.org/reverse?format=jsonv2&addressdetails=1&accept-language=nl&email=16034198@student.hhs.nl";
 
         private readonly MemoryCache _memoryCache = new MemoryCache(new MemoryCacheOptions());
 
@@ -26,6 +27,7 @@ namespace BGTBackend.Controllers
         [Authorize]
         public async Task<Response> Search([FromQuery] string location)
         {
+            location = HttpUtility.UrlEncode(location.ToLowerInvariant());
             string url = $"{SearchURL.Replace("{q}", location)}";
             try
             {
@@ -43,6 +45,8 @@ namespace BGTBackend.Controllers
         [Authorize]
         public async Task<Response> Reverse([FromQuery] string lat, string lon)
         {
+            lat = HttpUtility.UrlEncode(lat.ToLowerInvariant());
+            lon = HttpUtility.UrlEncode(lon.ToLowerInvariant());
             string url = $"{ReverseSearchURL}&lat={lat}&lon={lon}";
             try
             {
