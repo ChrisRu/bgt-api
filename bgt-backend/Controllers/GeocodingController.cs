@@ -14,7 +14,7 @@ namespace BGTBackend.Controllers
     public class GeocodingController : Controller
     {
         private const string SearchURL =
-            "https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&accept-language=nl";
+            "https://nominatim.openstreetmap.org/search/nl/den haag/{q}?format=jsonv2&addressdetails=1&accept-language=nl";
 
         private const string ReverseSearchURL =
             "https://nominatim.openstreetmap.org/reverse?format=jsonv2&addressdetails=1&accept-language=nl";
@@ -26,7 +26,7 @@ namespace BGTBackend.Controllers
         [Authorize]
         public async Task<Response> Search([FromQuery] string location)
         {
-            string url = $"{SearchURL}&q={location}";
+            string url = $"{SearchURL.Replace("{q}", location)}";
             try
             {
                 return new Response(this.Response, await this.Request(url));
