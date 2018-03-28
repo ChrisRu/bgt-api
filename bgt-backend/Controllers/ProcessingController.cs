@@ -5,8 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace BGTBackend.Controllers
 {
     [Route("api/[controller]")]
-    public class PreparationController : Controller<Preparation>
+    public class ProcessingController : Controller<Processing>
     {
-        protected override Repository<Preparation> _repo { get; set; } = new PreparationRepository();
+        protected override Repository<Processing> _repo { get; set; } = new ProcessingRepository();
     }
 }

@@ -27,18 +27,33 @@ namespace BGTBackend.Middleware
             this._options = options.Value;
         }
 
+        /// <summary>
+        /// Intercept request to check if the path matches the authenticate route
+        /// </summary>
+        /// <param name="context">Context to send token to if path matches</param>
+        /// <returns>Task that resolves when the request has been handled</returns>
         public Task Invoke(HttpContext context)
         {
             // If path does not match /authentication, continue
             if (!context.Request.Path.Equals(this._options.Path, StringComparison.OrdinalIgnoreCase))
+            {
                 return this._next(context);
+            }
 
             if (context.Request.Method != "POST")
+            {
                 return Error(context, 405, "Gebruik een POST request om log in data mee te sturen");
+            }
 
             return this.GenerateToken(context);
         }
 
+        /// <summary>
+        /// Create a JSON web token if credentials are correct
+        /// </summary>
+        /// <param name="context">Context to get data from and write response to</param>
+        /// <returns>Task that resolves when JSON web token has been sent</returns>
+        /// <exception cref="Exception">Exception thrown when data is incorrect</exception>
         [ValidateAntiForgeryToken]
         private async Task GenerateToken(HttpContext context)
         {
@@ -110,12 +125,25 @@ namespace BGTBackend.Middleware
             });
         }
 
+        /// <summary>
+        /// Write object in JSON to response
+        /// </summary>
+        /// <param name="context">Context to write to</param>
+        /// <param name="message">Message to send</param>
+        /// <returns>Task that completes when response message has been written</returns>
         private static Task Send(HttpContext context, object message)
         {
             context.Response.ContentType = "application/json";
             return context.Response.WriteAsync(JsonConvert.SerializeObject(new Response(context.Response, message)));
         }
 
+        /// <summary>
+        /// Write error to response
+        /// </summary>
+        /// <param name="context">Context to write to</param>
+        /// <param name="code">HTTP status error code</param>
+        /// <param name="message">Message to send with error</param>
+        /// <returns>Task thta completes when response error has been written</returns>
         private static Task Error(HttpContext context, int code, string message)
         {
             context.Response.ContentType = "application/json";

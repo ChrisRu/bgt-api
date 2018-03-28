@@ -20,6 +20,11 @@ namespace BGTBackend.Controllers
         private const string ReverseSearchURL =
             "https://nominatim.openstreetmap.org/reverse?format=jsonv2&addressdetails=1&accept-language=nl&email=16034198@student.hhs.nl";
 
+        /// <summary>
+        /// Geocode, get coordinates by a location string
+        /// </summary>
+        /// <param name="location">Location to get data from</param>
+        /// <returns>A response with the data</returns>
         [HttpGet]
         [Route("[action]")]
         [Authorize]
@@ -38,6 +43,12 @@ namespace BGTBackend.Controllers
             }
         }
 
+        /// <summary>
+        /// Reverse Geocode, get information about the coordinates
+        /// </summary>
+        /// <param name="lat">Latitude</param>
+        /// <param name="lon">Longitude</param>
+        /// <returns>A response with the data</returns>
         [HttpGet]
         [Route("[action]")]
         [Authorize]
@@ -57,6 +68,11 @@ namespace BGTBackend.Controllers
             }
         }
 
+        /// <summary>
+        /// Do a web request to get the data from a url
+        /// </summary>
+        /// <param name="url">The URL to fetch from</param>
+        /// <returns>Dynamic object with the result</returns>
         private static async Task<object> Request(string url)
         {
             object res = Startup.MemoryCache.Get(url);

@@ -12,6 +12,30 @@ namespace BGTBackend.Controllers
     {
         protected abstract Repository<T> _repo { get; set; }
 
+        /// <summary>
+        /// Get all items of this category
+        /// </summary>
+        /// <returns>Response with all the items</returns>
+        [HttpGet]
+        [Authorize]
+        public async Task<Response> GetAll()
+        {
+            try
+            {
+                return new Response(this.Response, this._repo.GetAll());
+            }
+            catch (Exception error)
+            {
+                return new Response(this.Response,
+                    new Error(HttpStatusCode.NotFound, $"Kan niet alle {this._repo.TableName} ophalen: " + error.Message));
+            }
+        }
+
+        /// <summary>
+        /// Get an item by ID
+        /// </summary>
+        /// <param name="id">ID of item to fetch</param>
+        /// <returns>Response with the item itsself</returns>
         [HttpGet("{id}")]
         [Authorize]
         public async Task<Response> Get(int id)
@@ -27,24 +51,14 @@ namespace BGTBackend.Controllers
             }
         }
 
-        [HttpGet]
-        [Authorize]
-        public async Task<Response> GetAll()
-        {
-            try
-            {
-                return new Response(this.Response, this._repo.GetAll());
-            }
-            catch (Exception error)
-            {
-                return new Response(this.Response,
-                    new Error(HttpStatusCode.NotFound, "Kan niet alle projecten ophalen: " + error.Message));
-            }
-        }
-
+        /// <summary>
+        /// Edit an exisiting item
+        /// </summary>
+        /// <param name="value">Data of item to edit</param>
+        /// <returns>Response that shows whether request has been successful</returns>
         [HttpPut("{id}")]
         [Authorize]
-        public virtual async Task<Response> Edit(int id, [FromBody] T value)
+        public async Task<Response> Edit([FromBody] T value)
         {
             try
             {
@@ -57,6 +71,11 @@ namespace BGTBackend.Controllers
             }
         }
 
+        /// <summary>
+        /// Create a new item
+        /// </summary>
+        /// <param name="value">Data of item to create</param>
+        /// <returns>Response that shows whether request has been successful</returns>
         [HttpPost]
         [Authorize]
         public async Task<Response> Create([FromBody] T value)
