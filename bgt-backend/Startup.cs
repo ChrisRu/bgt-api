@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Text;
 using BGTBackend.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
@@ -72,8 +74,6 @@ namespace BGTBackend
                 )
             );
 
-            services.AddDirectoryBrowser();
-
             Console.WriteLine("Set up all services");
         }
 
@@ -89,9 +89,11 @@ namespace BGTBackend
                 SigningCredentials = new SigningCredentials(this.SigningKey, SecurityAlgorithms.HmacSha256)
             };
 
-            if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
 
-            app.UseDefaultFiles();
             app.UseStaticFiles();
 
             app.UseAuthentication();
