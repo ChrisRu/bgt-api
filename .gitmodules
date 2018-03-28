@@ -1,3 +1,3 @@
 [submodule "bgt-frontend"]
 	path = bgt-frontend
-	url = git@github.com:ChrisRu/bgt-frontend.git
+	url = https://github.com/ChrisRu/bgt-frontend.git
