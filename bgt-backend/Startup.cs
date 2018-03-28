@@ -94,6 +94,8 @@ namespace BGTBackend
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseStatusCodePagesWithReExecute("/");
+            app.UseDefaultFiles();
             app.UseStaticFiles();
 
             app.UseAuthentication();
