@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 
 namespace BGTBackend.Controllers
 {
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class ProjectsController : Controller
     {
         private readonly LocationRepository _locationRepo = new LocationRepository();

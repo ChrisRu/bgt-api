@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BGTBackend.Controllers
 {
+    [Route("api")]
     public class AuthenticationController : Controller
     {
         [HttpGet]

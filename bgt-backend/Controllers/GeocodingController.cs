@@ -11,7 +11,7 @@ using Newtonsoft.Json;
 
 namespace BGTBackend.Controllers
 {
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class GeocodingController : Controller
     {
         private const string SearchURL =
