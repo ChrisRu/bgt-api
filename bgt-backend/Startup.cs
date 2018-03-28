@@ -72,6 +72,8 @@ namespace BGTBackend
                 )
             );
 
+            services.AddDirectoryBrowser();
+
             Console.WriteLine("Set up all services");
         }
 
@@ -89,11 +91,13 @@ namespace BGTBackend
 
             if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
 
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
+
             app.UseAuthentication();
             app.UseCors("DefaultPolicy");
             app.UseMvc();
             app.UseMiddleware<TokenProviderMiddleware>(Options.Create(jwtOptions));
-            app.UseStaticFiles();
 
             Console.WriteLine("Set up all app features");
         }
