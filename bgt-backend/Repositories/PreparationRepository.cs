@@ -5,15 +5,15 @@ namespace BGTBackend.Repositories
 {
     public class PreparationRepository : Repository<Preparation>
     {
-        protected override string TableName { get; } = "voorbereiding";
+        public override string TableName { get; } = "voorbereiding";
 
-        protected override Dictionary<string, string> DataMap { get; } = new Dictionary<string, string>
+        public override Dictionary<string, string> DataMap { get; } = new Dictionary<string, string>
         {
-            {"voorbereiding_code", "Id"},
-            {"project_code", "ProjectId"},
-            {"naam", "Name"},
-            {"uren", "Hours"},
-            {"einddatum_minicomp", "EndDate"}
+            {"voorbereiding.voorbereiding_code", "Id"},
+            {"voorbereiding.project_code", "ProjectId"},
+            {"voorbereiding.naam", "Name"},
+            {"voorbereiding.uren", "Hours"},
+            {"voorbereiding.einddatum", "EndDate"}
         };
     }
 }

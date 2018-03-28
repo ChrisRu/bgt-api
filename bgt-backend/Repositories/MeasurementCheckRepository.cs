@@ -5,8 +5,16 @@ namespace BGTBackend.Repositories
 {
     public class MeasurementCheckRepository : Repository<MeasurementCheck>
     {
-        protected override string TableName { get; } = "controle_meting";
+        public override string TableName { get; } = "controle_meting";
 
-        protected override Dictionary<string, string> DataMap { get; } = new Dictionary<string, string>();
+        public override Dictionary<string, string> DataMap { get; } = new Dictionary<string, string>
+        {
+            {"controle_meting.controle_meting_code", "Id"},
+            {"controle_meting.meting_code", "MeasurementId"},
+            {"controle_meting.naam", "Name"},
+            {"controle_meting.einddatum", "EndDate"},
+            {"controle_meting.uren", "Hours"},
+            {"controle_meting.punten", "Points"}
+        };
     }
 }

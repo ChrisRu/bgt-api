@@ -5,18 +5,18 @@ namespace BGTBackend.Repositories
 {
     public class FoundationRepository : Repository<Foundation>
     {
-        protected override string TableName { get; } = "grondslag";
+        public override string TableName { get; } = "grondslag";
 
-        protected override Dictionary<string, string> DataMap { get; } = new Dictionary<string, string>
+        public override Dictionary<string, string> DataMap { get; } = new Dictionary<string, string>
         {
-            {"grondslag_code", "Id"},
-            {"project_code", "ProjectId"},
-            {"naam_meten", "MeasurementName"},
-            {"naam_rekenen", "MeasurementCalculation"},
-            {"begindatum", "StartDate"},
-            {"einddatum", "EndDate"},
-            {"uren_meten", "HoursMeasuring"},
-            {"uren_rekenen", "HoursCalculating"}
+            {"grondslag.grondslag_code", "Id"},
+            {"grondslag.project_code", "ProjectId"},
+            {"grondslag.naam_meten", "MeasurementName"},
+            {"grondslag.naam_rekenen", "MeasurementCalculation"},
+            {"grondslag.begindatum", "StartDate"},
+            {"grondslag.einddatum", "EndDate"},
+            {"grondslag.uren_meten", "HoursMeasuring"},
+            {"grondslag.uren_rekenen", "HoursCalculating"}
         };
     }
 }

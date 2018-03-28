@@ -5,16 +5,16 @@ namespace BGTBackend.Repositories
 {
     public class MeasurementMapRepository : Repository<MeasurementMap>
     {
-        protected override string TableName { get; } = "meetmap";
+        public override string TableName { get; } = "meetmap";
 
-        protected override Dictionary<string, string> DataMap { get; } = new Dictionary<string, string>
+        public override Dictionary<string, string> DataMap { get; } = new Dictionary<string, string>
         {
-            {"meetmap_code", "Id"},
-            {"project_code", "ProjectId"},
-            {"naam", "Name"},
-            {"einddatum", "EndDate"},
-            {"uren", "Hours"},
-            {"geschatte_te_meten", "Estimate"}
+            {"meetmap.meetmap_code", "Id"},
+            {"meetmap.project_code", "ProjectId"},
+            {"meetmap.naam", "Name"},
+            {"meetmap.einddatum", "EndDate"},
+            {"meetmap.uren", "Hours"},
+            {"meetmap.geschatte_te_meten", "Estimate"}
         };
     }
 }

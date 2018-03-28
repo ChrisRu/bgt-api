@@ -6,9 +6,9 @@ namespace BGTBackend.Repositories
 {
     internal class StatsRepository : Repository<dynamic>
     {
-        protected override string TableName { get; }
+        public override string TableName { get; }
 
-        protected override Dictionary<string, string> DataMap { get; }
+        public override Dictionary<string, string> DataMap { get; }
 
         public dynamic GetMeasurementTypes()
         {

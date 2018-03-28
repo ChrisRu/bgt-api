@@ -5,16 +5,16 @@ namespace BGTBackend.Repositories
 {
     public class MeasurementRepository : Repository<Measurement>
     {
-        protected override string TableName { get; } = "meting";
+        public override string TableName { get; } = "meting";
 
-        protected override Dictionary<string, string> DataMap { get; } = new Dictionary<string, string>
+        public override Dictionary<string, string> DataMap { get; } = new Dictionary<string, string>
         {
-            {"meting_code", "Id"},
-            {"project_code", "ProjectId"},
-            {"oplevering", "DeliveryDate"},
-            {"bedrijf", "Company"},
-            {"begindatum", "StartDate"},
-            {"einddatum_minicomp", "EndDate"}
+            {"meting.meting_code", "Id"},
+            {"meting.project_code", "ProjectId"},
+            {"meting.oplevering", "DeliveryDate"},
+            {"meting.bedrijf", "Company"},
+            {"meting.begindatum", "StartDate"},
+            {"meting.einddatum_minicomp", "EndDate"}
         };
     }
 }

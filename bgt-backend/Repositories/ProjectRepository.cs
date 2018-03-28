@@ -5,9 +5,9 @@ namespace BGTBackend.Repositories
 {
     internal class ProjectRepository : Repository<Project>
     {
-        protected override string TableName { get; } = "project";
+        public override string TableName { get; } = "project";
 
-        protected override Dictionary<string, string> DataMap { get; } = new Dictionary<string, string>
+        public override Dictionary<string, string> DataMap { get; } = new Dictionary<string, string>
         {
             {"project.project_code", "Id"},
             {"project.bgton_nummer", "BGTonNumber"},

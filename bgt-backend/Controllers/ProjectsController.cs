@@ -17,20 +17,6 @@ namespace BGTBackend.Controllers
         private readonly ProjectRepository _repo = new ProjectRepository();
         private readonly UserRepository _userRepo = new UserRepository();
 
-        [HttpGet]
-        [Authorize]
-        public async Task<Response> GetAll()
-        {
-            try
-            {
-                return new Response(this.Response, this._repo.GetAll());
-            }
-            catch (Exception error)
-            {
-                return new Response(this.Response,
-                    new Error(HttpStatusCode.NotFound, "Kan niet alle projecten ophalen: " + error.Message));
-            }
-        }
 
         [HttpGet("{id}")]
         [Authorize]
@@ -43,7 +29,22 @@ namespace BGTBackend.Controllers
             catch (Exception error)
             {
                 return new Response(this.Response,
-                    new Error(HttpStatusCode.NotFound, "Kan project niet vinden: " + error.Message));
+                    new Error(HttpStatusCode.NotFound, $"Kan {this._repo.TableName} niet vinden: " + error.Message));
+            }
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<Response> GetAll()
+        {
+            try
+            {
+                return new Response(this.Response, this._repo.GetAll());
+            }
+            catch (Exception error)
+            {
+                return new Response(this.Response,
+                    new Error(HttpStatusCode.NotFound, "Kan niet alle projecten ophalen: " + error.Message));
             }
         }
 

@@ -93,6 +93,7 @@ namespace BGTBackend
             app.UseCors("DefaultPolicy");
             app.UseMvc();
             app.UseMiddleware<TokenProviderMiddleware>(Options.Create(jwtOptions));
+            app.UseStaticFiles();
 
             Console.WriteLine("Set up all app features");
         }

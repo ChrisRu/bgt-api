@@ -9,9 +9,9 @@ namespace BGTBackend.Repositories
 {
     public abstract class Repository<T>
     {
-        protected abstract string TableName { get; }
+        public abstract string TableName { get; }
 
-        protected abstract Dictionary<string, string> DataMap { get; }
+        public abstract Dictionary<string, string> DataMap { get; }
 
         public IEnumerable<T> GetAll()
         {
@@ -30,19 +30,22 @@ namespace BGTBackend.Repositories
             ", new {id});
         }
 
-        public virtual T Add(T item)
+        public T Add(T item)
         {
             return Execute(this.GetInserts(), item);
         }
 
-        public virtual T Edit(T item)
+        public T Edit(T item)
         {
             return Execute(this.GetUpdates(), item);
         }
 
-        private static string GetSelects(Dictionary<string, string> data, string inner = " ")
+        public T Delete(int id)
         {
-            return string.Join(", ", data.Select(kv => kv.Key + inner + kv.Value));
+            return Execute($@"
+                DELETE FROM {this.TableName}
+                WHERE {this.TableName}_code = @id
+            ", new {id});
         }
 
         protected string GetSelects(string inner = " ")
@@ -119,6 +122,11 @@ namespace BGTBackend.Repositories
 
                 return connection.ExecuteScalar<T>(sql, parameters);
             }
+        }
+
+        private static string GetSelects(Dictionary<string, string> data, string inner = " ")
+        {
+            return string.Join(", ", data.Select(kv => kv.Key + inner + kv.Value));
         }
 
         private static void LogQuery(string message, string sql)

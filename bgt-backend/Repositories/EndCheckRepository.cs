@@ -5,15 +5,15 @@ namespace BGTBackend.Repositories
 {
     public class EndCheckRepository : Repository<EndCheck>
     {
-        protected override string TableName { get; } = "eind_controle";
+        public override string TableName { get; } = "eind_controle";
 
-        protected override Dictionary<string, string> DataMap { get; } = new Dictionary<string, string>
+        public override Dictionary<string, string> DataMap { get; } = new Dictionary<string, string>
         {
-            {"eind_controle_code", "Id"},
-            {"project_code", "ProjectId"},
-            {"naam", "Name"},
-            {"uren", "Hours"},
-            {"einddatum_minicomp", "EndDate"}
+            {"eind_controle.eind_controle_code", "Id"},
+            {"eind_controle.project_code", "ProjectId"},
+            {"eind_controle.naam", "Name"},
+            {"eind_controle.uren", "Hours"},
+            {"eind_controle.einddatum_minicomp", "EndDate"}
         };
     }
 }

@@ -5,17 +5,17 @@ namespace BGTBackend.Repositories
 {
     public class StereokarterenRepository : Repository<Stereokarteren>
     {
-        protected override string TableName { get; } = "stereokarteren";
+        public override string TableName { get; } = "stereokarteren";
 
-        protected override Dictionary<string, string> DataMap { get; } = new Dictionary<string, string>
+        public override Dictionary<string, string> DataMap { get; } = new Dictionary<string, string>
         {
-            {"stereokarteren_code", "Id"},
-            {"project_code", "ProjectId"},
-            {"naam", "Name"},
-            {"begindatum", "StartDate"},
-            {"einddatum", "EndDate"},
-            {"uren", "Hours"},
-            {"puntent", "Points"}
+            {"stereokarteren.stereokarteren_code", "Id"},
+            {"stereokarteren.project_code", "ProjectId"},
+            {"stereokarteren.naam", "Name"},
+            {"stereokarteren.begindatum", "StartDate"},
+            {"stereokarteren.einddatum", "EndDate"},
+            {"stereokarteren.uren", "Hours"},
+            {"stereokarteren.punten", "Points"}
         };
     }
 }

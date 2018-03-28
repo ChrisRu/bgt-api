@@ -5,18 +5,18 @@ namespace BGTBackend.Repositories
 {
     public class ExploringRepository : Repository<Exploring>
     {
-        protected override string TableName { get; } = "verkennen";
+        public override string TableName { get; } = "verkennen";
 
-        protected override Dictionary<string, string> DataMap { get; } = new Dictionary<string, string>
+        public override Dictionary<string, string> DataMap { get; } = new Dictionary<string, string>
         {
-            {"verken_code", "Id"},
-            {"project_code", "ProjectId"},
-            {"m2_code", "M2"},
-            {"naam", "Name"},
-            {"begindatum", "StartDate"},
-            {"einddatum", "EndDate"},
-            {"einddatum_opgeleverd", "EndDateDelivered"},
-            {"opmerking", "Remarks"}
+            {"verkennen.verken_code", "Id"},
+            {"verkennen.project_code", "ProjectId"},
+            {"verkennen.m2_code", "M2"},
+            {"verkennen.naam", "Name"},
+            {"verkennen.begindatum", "StartDate"},
+            {"verkennen.einddatum", "EndDate"},
+            {"verkennen.einddatum_opgeleverd", "EndDateDelivered"},
+            {"verkennen.opmerking", "Remarks"}
         };
     }
 }

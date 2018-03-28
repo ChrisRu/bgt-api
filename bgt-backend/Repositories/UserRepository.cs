@@ -5,14 +5,14 @@ namespace BGTBackend.Repositories
 {
     internal class UserRepository : Repository<User>
     {
-        protected override string TableName { get; } = "gebruiker";
+        public override string TableName { get; } = "gebruiker";
 
-        protected override Dictionary<string, string> DataMap { get; } = new Dictionary<string, string>
+        public override Dictionary<string, string> DataMap { get; } = new Dictionary<string, string>
         {
-            {"gebruiker_code", "Id"},
-            {"gebruikersnaam", "Username"},
-            {"wachtwoord", "Password"},
-            {"admin", "IsAdmin"}
+            {"gebruiker.gebruiker_code", "Id"},
+            {"gebruiker.gebruikersnaam", "Username"},
+            {"gebruiker.wachtwoord", "Password"},
+            {"gebruiker.admin", "IsAdmin"}
         };
 
         public User Get(string username)

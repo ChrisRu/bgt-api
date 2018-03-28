@@ -9,9 +9,9 @@ using Microsoft.AspNetCore.Mvc;
 namespace BGTBackend.Controllers
 {
     [Route("[controller]")]
-    public class UsersController : Controller
+    public class UsersController : Controller<User>
     {
-        private readonly UserRepository _repo = new UserRepository();
+        protected override Repository<User> _repo { get; set; } = new UserRepository();
 
         [HttpPut("{id}")]
         [Authorize]

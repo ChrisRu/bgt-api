@@ -5,9 +5,9 @@ namespace BGTBackend.Repositories
 {
     internal class LocationRepository : Repository<Location>
     {
-        protected override string TableName { get; } = "locatie";
+        public override string TableName { get; } = "locatie";
 
-        protected override Dictionary<string, string> DataMap { get; } = new Dictionary<string, string>
+        public override Dictionary<string, string> DataMap { get; } = new Dictionary<string, string>
         {
             {"locatie.locatie_code", "Id"},
             {"locatie.longtitude", "Longtitude"},
@@ -21,6 +21,11 @@ namespace BGTBackend.Repositories
                 FROM locatie
                 WHERE latitude = @lat AND longtitude = @lon
             ", new {lon, lat});
+        }
+
+        public Location Add(LocationPost project)
+        {
+            return Execute(this.GetInserts(), project);
         }
     }
 }

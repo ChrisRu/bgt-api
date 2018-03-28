@@ -5,16 +5,16 @@ namespace BGTBackend.Repositories
 {
     public class ProcessingRepository : Repository<Processing>
     {
-        protected override string TableName { get; } = "verwerken";
+        public override string TableName { get; } = "verwerken";
 
-        protected override Dictionary<string, string> DataMap { get; } = new Dictionary<string, string>
+        public override Dictionary<string, string> DataMap { get; } = new Dictionary<string, string>
         {
-            {"verwerk_code", "Id"},
-            {"project_code", "ProjectId"},
-            {"naam", "Name"},
-            {"begindatum", "StartDate"},
-            {"einddatum", "EndDate"},
-            {"uren", "Hours"}
+            {"verwerken.verwerk_code", "Id"},
+            {"verwerken.project_code", "ProjectId"},
+            {"verwerken.naam", "Name"},
+            {"verwerken.begindatum", "StartDate"},
+            {"verwerken.einddatum", "EndDate"},
+            {"verwerken.uren", "Hours"}
         };
     }
 }
