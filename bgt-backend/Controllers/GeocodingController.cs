@@ -15,7 +15,7 @@ namespace BGTBackend.Controllers
     public class GeocodingController : Controller
     {
         private const string SearchURL =
-            "https://nominatim.openstreetmap.org/search/nl/den haag/{q}?format=jsonv2&addressdetails=1&accept-language=nl&email=16034198@student.hhs.nl";
+            "https://nominatim.openstreetmap.org/search/nl/den%20haag/{q}?format=jsonv2&addressdetails=1&accept-language=nl";
 
         private const string ReverseSearchURL =
             "https://nominatim.openstreetmap.org/reverse?format=jsonv2&addressdetails=1&accept-language=nl&email=16034198@student.hhs.nl";
@@ -30,8 +30,8 @@ namespace BGTBackend.Controllers
         [Authorize]
         public async Task<Response> Search([FromQuery] string location)
         {
-            location = HttpUtility.UrlEncode(location.ToLowerInvariant());
-            string url = $"{SearchURL.Replace("{q}", location)}";
+            string url = $"{SearchURL.Replace("{q}", HttpUtility.UrlEncode(location.Replace("+", " ").ToLowerInvariant()))}";
+            Console.WriteLine(url);
             try
             {
                 return new Response(this.Response, await Request(url));
@@ -79,7 +79,7 @@ namespace BGTBackend.Controllers
             if (res != null) return res;
 
             HttpWebRequest request = (HttpWebRequest) WebRequest.Create(url);
-            request.Headers.Add(HttpRequestHeader.UserAgent, "BGT API");
+            request.Headers.Add(HttpRequestHeader.UserAgent, "BGT API - 16034198@student.hhs.nl");
             request.Headers.Add(HttpRequestHeader.Referer, "denhaag.azurewebsites.net");
 
             using (HttpWebResponse response = (HttpWebResponse) await request.GetResponseAsync())
