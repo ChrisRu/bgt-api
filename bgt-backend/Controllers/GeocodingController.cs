@@ -15,26 +15,52 @@ namespace BGTBackend.Controllers
     public class GeocodingController : Controller
     {
         private const string SearchURL =
-            "https://nominatim.openstreetmap.org/search/nl/den%20haag/{q}?format=jsonv2&addressdetails=1&accept-language=nl";
+            "https://bagviewer.kadaster.nl/lvbag/bag-viewer/api/suggest?count=5&offset=0&searchQuery={q}";
+
+        private const string SearchDetailsURL =
+            "https://bagviewer.kadaster.nl/lvbag/bag-viewer/api/searchByLsId?lsId={q}";
 
         private const string ReverseSearchURL =
             "https://nominatim.openstreetmap.org/reverse?format=jsonv2&addressdetails=1&accept-language=nl&email=16034198@student.hhs.nl";
 
         /// <summary>
-        /// Geocode, get coordinates by a location string
+        /// Geocode, get a location string
         /// </summary>
         /// <param name="location">Location to get data from</param>
         /// <returns>A response with the data</returns>
         [HttpGet]
-        [Route("[action]")]
+        [Route("[action]/{location}")]
         [Authorize]
-        public async Task<Response> Search([FromQuery] string location)
+        public async Task<Response> Search(string location)
         {
             string url = $"{SearchURL.Replace("{q}", HttpUtility.UrlEncode(location.Replace("+", " ").ToLowerInvariant()))}";
-            Console.WriteLine(url);
             try
             {
-                return new Response(this.Response, await Request(url));
+                var result = await Request(url);
+                return new Response(this.Response, result.lsIdDisplayStringPairs);
+            }
+            catch (Exception error)
+            {
+                return new Response(this.Response,
+                    new Error(HttpStatusCode.BadGateway, "Kan geen informatie ophalen: " + error.Message));
+            }
+        }
+
+        /// <summary>
+        /// Geocode, get a location string
+        /// </summary>
+        /// <param name="location">Location to get data from</param>
+        /// <returns>A response with the data</returns>
+        [HttpGet]
+        [Route("[action]/{id}")]
+        [Authorize]
+        public async Task<Response> GetDetails(string id)
+        {
+            string url = $"{SearchDetailsURL.Replace("{q}", HttpUtility.UrlEncode(id.ToLowerInvariant()))}";
+            try
+            {
+                var result = await Request(url);
+                return new Response(this.Response, result);
             }
             catch (Exception error)
             {
@@ -73,13 +99,13 @@ namespace BGTBackend.Controllers
         /// </summary>
         /// <param name="url">The URL to fetch from</param>
         /// <returns>Dynamic object with the result</returns>
-        private static async Task<object> Request(string url)
+        private static async Task<dynamic> Request(string url)
         {
             object res = Startup.MemoryCache.Get(url);
             if (res != null) return res;
 
             HttpWebRequest request = (HttpWebRequest) WebRequest.Create(url);
-            request.Headers.Add(HttpRequestHeader.UserAgent, "BGT API - 16034198@student.hhs.nl");
+            request.Headers.Add(HttpRequestHeader.UserAgent, "BGT API");
             request.Headers.Add(HttpRequestHeader.Referer, "denhaag.azurewebsites.net");
 
             using (HttpWebResponse response = (HttpWebResponse) await request.GetResponseAsync())
