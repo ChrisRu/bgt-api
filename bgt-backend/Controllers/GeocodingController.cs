@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web;
@@ -8,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace BGTBackend.Controllers
 {
@@ -19,6 +22,9 @@ namespace BGTBackend.Controllers
 
         private const string SearchDetailsURL =
             "https://bagviewer.kadaster.nl/lvbag/bag-viewer/api/searchByLsId?lsId={q}";
+
+        private const string KadasterURL =
+            "https://geodata.nationaalgeoregister.nl/bgtterugmeldingen/wfs?request=GetFeature&service=WFS&version=2.0.0&typeName=bgtterugmeldingen&outputFormat=application%2Fjson&bbox=70481,443230,83676,460193";
 
         private const string ReverseSearchURL =
             "https://nominatim.openstreetmap.org/reverse?format=jsonv2&addressdetails=1&accept-language=nl&email=16034198@student.hhs.nl";
@@ -95,6 +101,28 @@ namespace BGTBackend.Controllers
         }
 
         /// <summary>
+        /// Get the BAG API Terugmeldingen
+        /// </summary>
+        /// <returns>List of unfinished tasks</returns>
+        [HttpGet]
+        [Route("[action]")]
+        [Authorize]
+        public async Task<Response> TerugMeldingen([FromQuery] bool getAll = false)
+        {
+            try
+            {
+                var fullResponse = await Request(KadasterURL);
+                var filteredResponse = ((JArray) fullResponse.features).ToObject<List<dynamic>>().FindAll(feature => getAll || feature?.properties?.status == "Nieuw");
+                return new Response(this.Response, filteredResponse);
+            }
+            catch (Exception error)
+            {
+                return new Response(this.Response,
+                    new Error(HttpStatusCode.BadGateway, "Kan geen informatie ophalen: " + error.Message));
+            }
+        }
+
+        /// <summary>
         /// Do a web request to get the data from a url
         /// </summary>
         /// <param name="url">The URL to fetch from</param>
@@ -102,7 +130,10 @@ namespace BGTBackend.Controllers
         private static async Task<dynamic> Request(string url)
         {
             object res = Startup.MemoryCache.Get(url);
-            if (res != null) return res;
+            if (res != null)
+            {
+                return res;
+            }
 
             HttpWebRequest request = (HttpWebRequest) WebRequest.Create(url);
             request.Headers.Add(HttpRequestHeader.UserAgent, "BGT API");
