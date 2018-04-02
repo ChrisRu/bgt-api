@@ -95,7 +95,7 @@ namespace BGTBackend.Repositories
             return $@"
                 UPDATE {this.TableName}
                 SET {GetSelects(data, " = @")}
-                WHERE project_code = @Id
+                WHERE project_code = @projectId
             ";
         }
 
@@ -110,7 +110,8 @@ namespace BGTBackend.Repositories
                 .Where(kv => kv.Key.StartsWith(this.TableName));
 
             string insertInto = string.Join(", ", data.Select(kv => kv.Key));
-            string values = string.Join(", ", data.Select(kv => "@" + kv.Value));
+            string values = string.Join(", ",
+                data.Select(kv => "@" + char.ToLower(kv.Value[0]) + kv.Value.Substring(1)));
 
             return $@"
                 INSERT INTO {this.TableName}({insertInto})
@@ -192,7 +193,11 @@ namespace BGTBackend.Repositories
         /// <returns>A string of joined properties in SQL format</returns>
         protected static string GetSelects(Dictionary<string, string> data, string inner = " ")
         {
-            return string.Join(", ", data.Select(kv => kv.Key + inner + kv.Value));
+            return string.Join(", ", data.Select(kv => kv.Key + inner + (
+                                                           inner.Contains("@")
+                                                               ? char.ToLower(kv.Value[0]) + kv.Value.Substring(1)
+                                                               : kv.Value)
+            ));
         }
 
         /// <summary>

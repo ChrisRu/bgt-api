@@ -58,7 +58,27 @@ namespace BGTBackend.Controllers
         /// <returns>Response that shows whether request has been successful</returns>
         [HttpPut("{id}")]
         [Authorize]
-        public async Task<Response> Edit([FromBody] T value)
+        public async Task<Response> Put([FromBody] T value)
+        {
+            try
+            {
+                return new Response(this.Response, this._repo.Edit(value));
+            }
+            catch (Exception error)
+            {
+                return new Response(this.Response,
+                    new Error(HttpStatusCode.BadRequest, $"Kan {this._repo.TableName} niet aanpassen: " + error.Message));
+            }
+        }
+
+        /// <summary>
+        /// Edit an exisiting item
+        /// </summary>
+        /// <param name="value">Data of item to edit</param>
+        /// <returns>Response that shows whether request has been successful</returns>
+        [HttpPatch("{id}")]
+        [Authorize]
+        public async Task<Response> Patch([FromBody] T value)
         {
             try
             {

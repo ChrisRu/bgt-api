@@ -14,7 +14,9 @@ namespace BGTBackend.Models
 
         public string Category { get; set; }
 
-        public string Location { get; set; }
+        public string Longtitude { get; set; }
+
+        public string Latitude { get; set; }
 
         public int? LocationCode { get; set; }
 

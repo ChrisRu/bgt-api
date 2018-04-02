@@ -50,18 +50,17 @@ namespace BGTBackend.Controllers
 
         [HttpPatch("{id}")]
         [Authorize]
-        public async Task<Response> Edit(int id, [FromBody] ProjectPost project)
+        public async Task<Response> Edit([FromBody] ProjectPost project)
         {
             try
             {
-                Project previousProject = this._repo.Get(id);
-
                 project.LastEditedUser =
                     this._userRepo.Get(AuthenticationController.GetCurrentUsername(this.HttpContext)).Id;
                 project.LastEditedDate = DateTimeOffset.Now;
-                project.LocationCode = !string.IsNullOrEmpty(project.Location)
-                    ? (await this.GetLocation(project.Location)).Id
-                    : previousProject.Location.Id;
+                if (project.Latitude != null && project.Longtitude != null)
+                {
+                    project.LocationCode = this.GetLocation(project.Longtitude, project.Latitude).Id;
+                }
 
                 this._repo.Edit(project);
                 return new Response(this.Response, project);
@@ -82,7 +81,7 @@ namespace BGTBackend.Controllers
                 project.LastEditedUser =
                     this._userRepo.Get(AuthenticationController.GetCurrentUsername(this.HttpContext)).Id;
                 project.LastEditedDate = DateTimeOffset.Now;
-                project.LocationCode = (await this.GetLocation(project.Location)).Id;
+                project.LocationCode = this.GetLocation(project.Longtitude, project.Latitude).Id;
 
                 this._repo.Add(project);
                 return new {success = true};
@@ -94,35 +93,21 @@ namespace BGTBackend.Controllers
             }
         }
 
-        private async Task<Location> GetLocation(string location)
+        private Location GetLocation(string longitude, string latitude)
         {
-            LocationPost locationPost = await Geocode(location);
-            Location dbLocation = this._locationRepo.Get(locationPost.Longtitude, locationPost.Latitude);
+            Location location = this._locationRepo.Get(longitude, latitude);
 
-            if (dbLocation == null)
+            if (location == null)
             {
-                this._locationRepo.Add(locationPost);
-                dbLocation = this._locationRepo.Get(locationPost.Longtitude, locationPost.Latitude);
+                this._locationRepo.Add(new LocationPost
+                {
+                    Longtitude = longitude,
+                    Latitude = latitude
+                });
+                this._locationRepo.Get(longitude, latitude);
             }
 
-            return dbLocation;
-        }
-
-        private static async Task<LocationPost> Geocode(string location)
-        {
-            using (HttpClient httpClient = new HttpClient())
-            {
-                httpClient.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", "BGT API for geocoding");
-
-                string json =
-                    await httpClient.GetStringAsync(
-                        $"https://nominatim.openstreetmap.org/search/{location}?format=json&limit=1");
-                dynamic data = JsonConvert.DeserializeObject(json);
-
-                if (data == null) throw new Exception("Locatie niet gevonden");
-
-                return new LocationPost {Latitude = data[0].lat, Longtitude = data[0].lon};
-            }
+            return location;
         }
     }
 }
