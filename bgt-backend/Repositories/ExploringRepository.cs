@@ -14,7 +14,6 @@ namespace BGTBackend.Repositories
             {"verkennen.m2_code", "M2"},
             {"verkennen.naam", "Name"},
             {"verkennen.begindatum", "StartDate"},
-            {"verkennen.einddatum", "EndDate"},
             {"verkennen.einddatum_opgeleverd", "EndDateDelivered"},
             {"verkennen.opmerking", "Remarks"}
         };

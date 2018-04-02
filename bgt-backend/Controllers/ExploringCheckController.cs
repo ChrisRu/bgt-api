@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BGTBackend.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/exploringcheck")]
     public class ExporingCheckController : Controller<ExploringCheck>
     {
         protected override Repository<ExploringCheck> _repo { get; set; } = new ExploringCheckRepository();

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BGTBackend.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/stats")]
     public class StatsController : Controller
     {
         private readonly StatsRepository _repo = new StatsRepository();

@@ -13,7 +13,7 @@ namespace BGTBackend.Repositories
             {"eind_controle.project_code", "ProjectId"},
             {"eind_controle.naam", "Name"},
             {"eind_controle.uren", "Hours"},
-            {"eind_controle.einddatum_minicomp", "EndDate"}
+            {"eind_controle.einddatum", "EndDate"}
         };
     }
 }

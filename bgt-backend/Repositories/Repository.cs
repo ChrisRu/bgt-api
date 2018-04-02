@@ -30,12 +30,12 @@ namespace BGTBackend.Repositories
         /// </summary>
         /// <param name="id">ID to find in the database</param>
         /// <returns>The found item from the database</returns>
-        public T Get(int id)
+        public virtual T Get(int id)
         {
             return QueryFirstOrDefault($@"
                 SELECT {this.GetSelects()}
                 FROM {this.TableName}
-                WHERE {this.TableName}_code = @id
+                WHERE project_code = @id
             ", new {id});
         }
 
@@ -64,11 +64,11 @@ namespace BGTBackend.Repositories
         /// </summary>
         /// <param name="id">ID to remove</param>
         /// <returns>null</returns>
-        public T Delete(int id)
+        public virtual T Delete(int id)
         {
             return Execute($@"
                 DELETE FROM {this.TableName}
-                WHERE {this.TableName}_code = @id
+                WHERE project_code = @id
             ", new {id});
         }
 
@@ -85,7 +85,7 @@ namespace BGTBackend.Repositories
         /// Get valid SQL UPDATE query of the properties
         /// </summary>
         /// <returns>SQL UPDATE Query</returns>
-        protected string GetUpdates()
+        protected virtual string GetUpdates()
         {
             Dictionary<string, string> data = this.DataMap
                 .Where(kv => kv.Value != "Id")
@@ -93,7 +93,7 @@ namespace BGTBackend.Repositories
                 .ToDictionary(i => i.Key, i => i.Value);
 
             return $@"
-                UPDATE project
+                UPDATE {this.TableName}
                 SET {GetSelects(data, " = @")}
                 WHERE project_code = @Id
             ";
@@ -190,7 +190,7 @@ namespace BGTBackend.Repositories
         /// <param name="data">Mapped properties</param>
         /// <param name="inner">String to connect the keys and values with</param>
         /// <returns>A string of joined properties in SQL format</returns>
-        private static string GetSelects(Dictionary<string, string> data, string inner = " ")
+        protected static string GetSelects(Dictionary<string, string> data, string inner = " ")
         {
             return string.Join(", ", data.Select(kv => kv.Key + inner + kv.Value));
         }

@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BGTBackend.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/users")]
     public class UsersController : Controller<User>
     {
         protected override Repository<User> _repo { get; set; } = new UserRepository();

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BGTBackend.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/endcheck")]
     public class EndCheckController : Controller<EndCheck>
     {
         protected override Repository<EndCheck> _repo { get; set; } = new EndCheckRepository();

@@ -14,7 +14,7 @@ using Newtonsoft.Json.Linq;
 
 namespace BGTBackend.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/geocoding")]
     public class GeocodingController : Controller
     {
         private const string SearchURL =
@@ -35,7 +35,7 @@ namespace BGTBackend.Controllers
         /// <param name="location">Location to get data from</param>
         /// <returns>A response with the data</returns>
         [HttpGet]
-        [Route("[action]/{location}")]
+        [Route("search/{location}")]
         [Authorize]
         public async Task<Response> Search(string location)
         {
@@ -58,7 +58,7 @@ namespace BGTBackend.Controllers
         /// <param name="location">Location to get data from</param>
         /// <returns>A response with the data</returns>
         [HttpGet]
-        [Route("[action]/{id}")]
+        [Route("getdetails/{id}")]
         [Authorize]
         public async Task<Response> GetDetails(string id)
         {
@@ -82,7 +82,7 @@ namespace BGTBackend.Controllers
         /// <param name="lon">Longitude</param>
         /// <returns>A response with the data</returns>
         [HttpGet]
-        [Route("[action]")]
+        [Route("reverse")]
         [Authorize]
         public async Task<Response> Reverse([FromQuery] string lat, string lon)
         {
@@ -105,7 +105,7 @@ namespace BGTBackend.Controllers
         /// </summary>
         /// <returns>List of unfinished tasks</returns>
         [HttpGet]
-        [Route("[action]")]
+        [Route("terugmeldingen")]
         [Authorize]
         public async Task<Response> TerugMeldingen([FromQuery] bool getAll = false)
         {
