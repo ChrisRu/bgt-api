@@ -1,12 +1,10 @@
 using System;
 using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using BGTBackend.Models;
 using BGTBackend.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 namespace BGTBackend.Controllers
 {
@@ -57,9 +55,10 @@ namespace BGTBackend.Controllers
                 project.LastEditedUser =
                     this._userRepo.Get(AuthenticationController.GetCurrentUsername(this.HttpContext)).Id;
                 project.LastEditedDate = DateTimeOffset.Now;
-                if (project.Latitude != null && project.Longtitude != null)
+
+                if (project.Location.Latitude != null && project.Location.Longtitude != null)
                 {
-                    project.LocationCode = this.GetLocation(project.Longtitude, project.Latitude).Id;
+                    project.LocationCode = this.GetLocation(project.Location.Longtitude, project.Location.Latitude).Id;
                 }
 
                 this._repo.Edit(project);
@@ -81,7 +80,7 @@ namespace BGTBackend.Controllers
                 project.LastEditedUser =
                     this._userRepo.Get(AuthenticationController.GetCurrentUsername(this.HttpContext)).Id;
                 project.LastEditedDate = DateTimeOffset.Now;
-                project.LocationCode = this.GetLocation(project.Longtitude, project.Latitude).Id;
+                project.LocationCode = this.GetLocation(project.Location.Longtitude, project.Location.Latitude).Id;
 
                 this._repo.Add(project);
                 return new {success = true};

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace BGTBackend.Models
 {
@@ -14,9 +14,7 @@ namespace BGTBackend.Models
 
         public string Category { get; set; }
 
-        public string Longtitude { get; set; }
-
-        public string Latitude { get; set; }
+        public LocationPost Location { get; set; }
 
         public int? LocationCode { get; set; }
 

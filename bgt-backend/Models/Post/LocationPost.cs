@@ -1,4 +1,4 @@
-﻿namespace BGTBackend.Models
+namespace BGTBackend.Models
 {
     public class LocationPost
     {
