@@ -22,10 +22,5 @@ namespace BGTBackend.Repositories
                 WHERE latitude = @lat AND longtitude = @lon
             ", new {lon, lat});
         }
-
-        public Location Add(LocationPost project)
-        {
-            return Execute(this.GetInserts(), project);
-        }
     }
 }

@@ -98,12 +98,13 @@ namespace BGTBackend.Controllers
 
             if (location == null)
             {
-                this._locationRepo.Add(new LocationPost
+                this._locationRepo.Add(new Location
                 {
                     Longtitude = longitude,
                     Latitude = latitude
                 });
-                this._locationRepo.Get(longitude, latitude);
+
+                location = this._locationRepo.Get(longitude, latitude);
             }
 
             return location;
