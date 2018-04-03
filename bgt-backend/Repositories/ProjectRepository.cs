@@ -19,7 +19,8 @@ namespace BGTBackend.Repositories
             {"project.laatst_aangepast_gebruiker", "LastEditedUser"},
             {"locatie.longtitude", "Longtitude"},
             {"locatie.latitude", "Latitude"},
-            {"gebruiker.gebruikersnaam", "Username"}
+            {"gebruiker.gebruikersnaam", "Username"},
+            {"verkennen.begindatum", "ExploreDate"}
         };
 
         public IEnumerable<Project> GetAll()
@@ -27,8 +28,16 @@ namespace BGTBackend.Repositories
             return Query($@"
                 SELECT {this.GetSelects()}
                 FROM project
-                JOIN gebruiker on project.laatst_aangepast_gebruiker = gebruiker.gebruiker_code
-                JOIN locatie on project.locatie_code = locatie.locatie_code
+                JOIN gebruiker ON project.laatst_aangepast_gebruiker = gebruiker.gebruiker_code
+                JOIN locatie ON project.locatie_code = locatie.locatie_code
+                LEFT OUTER JOIN verkennen ON verkennen.project_code = project.project_code
+                WHERE
+                    verwijderd IS NULL
+                    AND NOT EXISTS (
+                        SELECT eind_controle.einddatum
+                        FROM eind_controle
+                        WHERE eind_controle.project_code = project.project_code OR eind_controle.einddatum IS NOT NULL
+                    )
             ");
         }
 
@@ -37,9 +46,17 @@ namespace BGTBackend.Repositories
             return QueryFirstOrDefault($@"
                 SELECT {this.GetSelects()}
                 FROM project
-                WHERE project.project_code = @projectId
-                JOIN gebruiker on project.laatst_aangepast_gebruiker = gebruiker.gebruiker_code
-                JOIN locatie on project.locatie_code = locatie.locatie_code
+                JOIN gebruiker ON project.laatst_aangepast_gebruiker = gebruiker.gebruiker_code
+                JOIN locatie ON project.locatie_code = locatie.locatie_code
+                LEFT OUTER JOIN verkennen ON verkennen.project_code = project.project_code
+                WHERE
+                    project.project_code = @projectId
+                    AND verwijderd IS NULL
+                    AND NOT EXISTS (
+                        SELECT eind_controle.einddatum
+                        FROM eind_controle
+                        WHERE eind_controle.project_code = project.project_code OR eind_controle.einddatum IS NOT NULL
+                    )
             ", new {projectId});
         }
 

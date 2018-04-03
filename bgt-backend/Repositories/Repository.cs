@@ -67,7 +67,8 @@ namespace BGTBackend.Repositories
         public virtual T Delete(int id)
         {
             return Execute($@"
-                DELETE FROM {this.TableName}
+                UPDATE {this.TableName}
+                SET verwijderd = NOW()
                 WHERE project_code = @id
             ", new {id});
         }

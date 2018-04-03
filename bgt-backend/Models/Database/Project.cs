@@ -23,5 +23,7 @@ namespace BGTBackend.Models
         public DateTimeOffset? LastEditedDate { get; set; }
 
         public int LastEditedUser { get; set; }
+
+        public DateTimeOffset ExploreDate { get; set; }
     }
 }
