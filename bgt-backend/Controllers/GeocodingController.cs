@@ -23,7 +23,7 @@ namespace BGTBackend.Controllers
             "https://bagviewer.kadaster.nl/lvbag/bag-viewer/api/searchByLsId?lsId={q}";
 
         private const string KadasterURL =
-            "https://geodata.nationaalgeoregister.nl/bgtterugmeldingen/wfs?request=GetFeature&service=WFS&version=2.0.0&typeName=bgtterugmeldingen&outputFormat=application%2Fjson&bbox=70481,443230,83676,460193";
+            "https://geodata.nationaalgeoregister.nl/bgtterugmeldingen/wfs?request=GetFeature&service=WFS&version=2.0.0&typeName=bgtterugmeldingen&outputFormat=application%2Fjson&bbox=69294,439441,87991,463824";
 
         private const string ReverseSearchURL =
             "https://nominatim.openstreetmap.org/reverse?format=jsonv2&addressdetails=1&accept-language=nl&email=16034198@student.hhs.nl";
