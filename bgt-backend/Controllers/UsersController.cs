@@ -12,6 +12,23 @@ namespace BGTBackend.Controllers
     public class UsersController : Controller<User>
     {
         protected override Repository<User> _repo { get; set; } = new UserRepository();
+        private readonly UserRepository _userRepo = new UserRepository();
+
+        [HttpGet("current")]
+        [Authorize]
+        public async Task<Response> Get()
+        {
+            try
+            {
+                string username = AuthenticationController.GetCurrentUsername(this.HttpContext);
+                return new Response(this.Response, this._userRepo.GetByUsername(username));
+            }
+            catch (Exception error)
+            {
+                return new Response(this.Response,
+                    new Error(HttpStatusCode.BadRequest, "Kan gebruiker ophalen: " + error.Message));
+            }
+        }
 
         [HttpPut("{id}")]
         [Authorize]
@@ -31,7 +48,7 @@ namespace BGTBackend.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPost("create")]
         [Authorize]
         public async Task<Response> Create([FromBody] User user)
         {

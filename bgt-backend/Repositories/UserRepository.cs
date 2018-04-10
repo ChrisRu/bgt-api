@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using BGTBackend.Models;
 
 namespace BGTBackend.Repositories
@@ -15,27 +16,37 @@ namespace BGTBackend.Repositories
             {"gebruiker.admin", "IsAdmin"}
         };
 
-        public User Get(string username)
+        public User GetByUsername(string username)
         {
             return QueryFirstOrDefault($@"
-                SELECT {this.GetSelects()}
+                SELECT
+                    gebruiker.gebruiker_code Id,
+                    gebruiker.gebruikersnaam Username,
+                    gebruiker.wachtwoord Password,
+                    gebruiker.admin IsAdmin
                 FROM gebruiker
                 WHERE gebruikersnaam = @username
             ", new {username});
         }
 
-        public User Add(User user)
+        public override User Add(User user)
         {
             user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
             return Execute(this.GetInserts(), user);
         }
 
-        public User Edit(User user)
+        public override User Edit(User user)
         {
             user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
-            return Execute($@"
-                UPDATE gebruiker
-                SET {this.GetUpdates()}
+
+            Dictionary<string, string> data = this.DataMap
+                .Where(kv => kv.Value != "Id")
+                .Where(kv => kv.Key.StartsWith(this.TableName))
+                .ToDictionary(i => i.Key, i => i.Value);
+
+            return QueryFirstOrDefault($@"
+                UPDATE {this.TableName}
+                SET {GetSelects(data, " = @")}
                 WHERE gebruiker_code = @Id
             ", user);
         }

@@ -79,7 +79,7 @@ namespace BGTBackend.Middleware
             User user;
             try
             {
-                user = this._repository.Get(username);
+                user = this._repository.GetByUsername(username);
 
                 if (user == null)
                     throw new Exception("No user exists with username: " + username);

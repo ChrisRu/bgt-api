@@ -44,7 +44,7 @@ namespace BGTBackend.Repositories
         /// </summary>
         /// <param name="item">Item to add to the database</param>
         /// <returns>The created database item</returns>
-        public T Add(T item)
+        public virtual T Add(T item)
         {
             return Execute(this.GetInserts(), item);
         }
@@ -54,7 +54,7 @@ namespace BGTBackend.Repositories
         /// </summary>
         /// <param name="item">Item to update in the database</param>
         /// <returns>The modified database item</returns>
-        public T Edit(T item)
+        public virtual T Edit(T item)
         {
             return Execute(this.GetUpdates(), item);
         }
@@ -68,7 +68,7 @@ namespace BGTBackend.Repositories
         {
             return Execute($@"
                 UPDATE {this.TableName}
-                SET verwijderd = NOW()
+                SET verwijderd = GETDATE()
                 WHERE project_code = @id
             ", new {id});
         }

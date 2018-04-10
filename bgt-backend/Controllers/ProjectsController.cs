@@ -15,7 +15,6 @@ namespace BGTBackend.Controllers
         private readonly ProjectRepository _repo = new ProjectRepository();
         private readonly UserRepository _userRepo = new UserRepository();
 
-
         [HttpGet("{id}")]
         [Authorize]
         public async Task<Response> Get(int id)
@@ -46,23 +45,25 @@ namespace BGTBackend.Controllers
             }
         }
 
-        [HttpPatch("{id}")]
+        [HttpPut("{id}")]
         [Authorize]
-        public async Task<Response> Edit([FromBody] ProjectPost project)
+        public async Task<Response> Put([FromBody] ProjectPost project)
         {
             try
             {
-                project.LastEditedUser =
-                    this._userRepo.Get(AuthenticationController.GetCurrentUsername(this.HttpContext)).Id;
+                User user = this._userRepo.GetByUsername(AuthenticationController.GetCurrentUsername(this.HttpContext));
+                if (user != null)
+                {
+                    project.LastEditedUser = user.Id;
+                }
                 project.LastEditedDate = DateTimeOffset.Now;
 
-                if (project.Location.Latitude != null && project.Location.Longtitude != null)
+                if (project.Location?.Latitude != null && project.Location.Longtitude != null)
                 {
                     project.LocationCode = this.GetLocation(project.Location.Longtitude, project.Location.Latitude).Id;
                 }
 
-                this._repo.Edit(project);
-                return new Response(this.Response, project);
+                return new Response(this.Response, this._repo.Edit(project));
             }
             catch (Exception error)
             {
@@ -78,7 +79,7 @@ namespace BGTBackend.Controllers
             try
             {
                 project.LastEditedUser =
-                    this._userRepo.Get(AuthenticationController.GetCurrentUsername(this.HttpContext)).Id;
+                    this._userRepo.GetByUsername(AuthenticationController.GetCurrentUsername(this.HttpContext)).Id;
                 project.LastEditedDate = DateTimeOffset.Now;
                 project.LocationCode = this.GetLocation(project.Location.Longtitude, project.Location.Latitude).Id;
 
@@ -89,6 +90,21 @@ namespace BGTBackend.Controllers
             {
                 return new Response(this.Response,
                     new Error(HttpStatusCode.BadRequest, "Kan geen nieuw project aanmaken: " + error.Message));
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<object> Delete(int id)
+        {
+            try
+            {
+                this._repo.Delete(id);
+                return new {success = true};
+            }
+            catch (Exception error)
+            {
+                return new Response(this.Response,
+                    new Error(HttpStatusCode.NotFound, "Kan project niet verwijderen: " + error.Message));
             }
         }
 
